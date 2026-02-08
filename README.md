@@ -14,6 +14,7 @@ Sport Spot is a modern and user-friendly sports ground booking website that help
 - HTML5
 - CSS3
 - JavaScript
+- Python
 - Responsive Web Design
 
 ## 🎨 UI Highlights
