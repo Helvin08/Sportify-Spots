@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Membership Checkout - Sports Spots</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/index.css" rel="stylesheet">
+    <style>
+        .checkout-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .checkout-header h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .checkout-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        @media (max-width: 768px) {
+            .checkout-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        .form-section h2 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .summary-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+        }
+        .summary-section h2 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .plan-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .plan-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .plan-duration {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .plan-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-top: 2px solid #667eea;
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .discount-label {
+            color: #28a745;
+        }
+        .submit-btn {
+            width: 100%;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 20px;
+        }
+        .submit-btn:hover {
+            background: #764ba2;
+        }
+        .error-msg {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .success-msg {
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .security-badge {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Sport Spot</div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="grounds.html">Grounds</a>
+        <a href="membership.html">Membership</a>
+        <a href="services.html">Service</a>
+        <a href="login.html" class="btn">Login</a>
+        <a href="signup.html" class="btn-outline">Sign Up</a>
+    </nav>
+</header>
+
+<div class="checkout-container">
+    <div class="checkout-header">
+        <h1>Complete Your Membership</h1>
+        <p>Secure checkout - Your information is protected</p>
+    </div>
+
+    <div class="checkout-content">
+        <!-- Left Side: Form -->
+        <div>
+            <!-- Personal Information -->
+            <div class="form-section">
+                <h2>Your Information</h2>
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                    <span class="error-msg" id="nameError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                    <span class="error-msg" id="emailError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required>
+                    <span class="error-msg" id="phoneError"></span>
+                </div>
+            </div>
+
+            <!-- Billing Information -->
+            <div class="form-section" style="margin-top: 20px;">
+                <h2>Billing Address</h2>
+                <div class="form-group">
+                    <label for="address">Street Address *</label>
+                    <input type="text" id="address" name="address" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">City *</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State *</label>
+                        <input type="text" id="state" name="state" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="zipcode">Zip Code *</label>
+                        <input type="text" id="zipcode" name="zipcode" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country *</label>
+                        <input type="text" id="country" name="country" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="form-section" style="margin-top: 20px;">
+                <h2>Payment Method</h2>
+                <div class="form-group">
+                    <label for="cardName">Cardholder Name *</label>
+                    <input type="text" id="cardName" name="cardName" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardNumber">Card Number *</label>
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
+                    <span class="error-msg" id="cardError"></span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expiry">Expiry Date *</label>
+                        <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV *</label>
+                        <input type="text" id="cvv" name="cvv" placeholder="123" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Summary -->
+        <div>
+            <div class="summary-section">
+                <h2>Order Summary</h2>
+                
+                <div class="plan-details" id="planDetails">
+                    <div class="plan-name" id="planNameDisplay">Monthly Plan</div>
+                    <div class="plan-duration" id="planDurationDisplay">1 Month of Access</div>
+                    <div class="plan-price" id="planPriceDisplay">$10.00</div>
+                </div>
+
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <div style="color: #28a745; font-weight: bold; margin-bottom: 8px;">✓ 20% Discount on Bookings</div>
+                    <div style="color: #28a745; font-weight: bold; margin-bottom: 8px;">✓ Priority Booking Access</div>
+                    <div style="color: #28a745; font-weight: bold;">✓ Support Access</div>
+                </div>
+
+                <div class="summary-item">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">$10.00</span>
+                </div>
+                <div class="summary-item">
+                    <span>Tax (0%):</span>
+                    <span id="tax">$0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>Total:</span>
+                    <span id="total">$10.00</span>
+                </div>
+
+                <button class="submit-btn" onclick="submitCheckout()">Complete Purchase</button>
+
+                <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                    <div style="font-weight: bold; color: #333; margin-bottom: 5px;">Demo Mode</div>
+                    <div style="font-size: 13px; color: #666;">
+                        This is a demo. In production, use a real payment processor like Stripe or PayPal.
+                    </div>
+                </div>
+
+                <div class="security-badge">
+                    🔒 Secure Payment | SSL Encrypted
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer style="background: #333; color: white; text-align: center; padding: 20px; margin-top: 40px;">
+    <p>&copy; 2026 Sports Spots. All rights reserved.</p>
+</footer>
+
+<script>
+    // Get plan from URL
+    function getPlanFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('plan') || 'monthly';
+    }
+
+    // Initialize plan details
+    function initializePlan() {
+        const plan = getPlanFromURL();
+        const plans = {
+            monthly: {
+                name: 'Monthly Plan',
+                duration: '1 Month of Access',
+                price: 10.00
+            },
+            yearly: {
+                name: 'Yearly Plan',
+                duration: '12 Months of Access',
+                price: 30.00
+            }
+        };
+
+        const selectedPlan = plans[plan] || plans.monthly;
+        
+        document.getElementById('planNameDisplay').textContent = selectedPlan.name;
+        document.getElementById('planDurationDisplay').textContent = selectedPlan.duration;
+        document.getElementById('planPriceDisplay').textContent = '$' + selectedPlan.price.toFixed(2);
+        document.getElementById('subtotal').textContent = '$' + selectedPlan.price.toFixed(2);
+        document.getElementById('total').textContent = '$' + selectedPlan.price.toFixed(2);
+    }
+
+    // Form validation
+    function validateForm() {
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const address = document.getElementById('address').value.trim();
+        const city = document.getElementById('city').value.trim();
+        const state = document.getElementById('state').value.trim();
+        const zipcode = document.getElementById('zipcode').value.trim();
+        const country = document.getElementById('country').value.trim();
+        const cardName = document.getElementById('cardName').value.trim();
+        const cardNumber = document.getElementById('cardNumber').value.trim();
+        const expiry = document.getElementById('expiry').value.trim();
+        const cvv = document.getElementById('cvv').value.trim();
+
+        // Clear all error messages
+        document.getElementById('nameError').textContent = '';
+        document.getElementById('emailError').textContent = '';
+        document.getElementById('phoneError').textContent = '';
+        document.getElementById('cardError').textContent = '';
+
+        let isValid = true;
+
+        if (!fullName) {
+            document.getElementById('nameError').textContent = 'Full name is required';
+            isValid = false;
+        }
+
+        if (!email || !email.includes('@')) {
+            document.getElementById('emailError').textContent = 'Valid email is required';
+            isValid = false;
+        }
+
+        if (!phone || phone.length < 10) {
+            document.getElementById('phoneError').textContent = 'Valid phone number is required';
+            isValid = false;
+        }
+
+        if (!address || !city || !state || !zipcode || !country) {
+            alert('Please fill all billing address fields');
+            isValid = false;
+        }
+
+        if (!cardName || !cardNumber || !expiry || !cvv) {
+            document.getElementById('cardError').textContent = 'Please fill all payment details';
+            isValid = false;
+        }
+
+        // Basic card number validation (not real validation)
+        if (cardNumber && cardNumber.replace(/\s/g, '').length !== 16) {
+            document.getElementById('cardError').textContent = 'Card number must be 16 digits';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    // Submit checkout
+    function submitCheckout() {
+        if (!validateForm()) {
+            return;
+        }
+
+        const plan = getPlanFromURL();
+        const formData = {
+            plan: plan,
+            fullName: document.getElementById('fullName').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            address: document.getElementById('address').value,
+            city: document.getElementById('city').value,
+            state: document.getElementById('state').value,
+            zipcode: document.getElementById('zipcode').value,
+            country: document.getElementById('country').value,
+            cardName: document.getElementById('cardName').value
+        };
+
+        // Send to backend
+        fetch('/api/membership/checkout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Membership activated successfully!');
+                // Store membership info
+                localStorage.setItem('membershipActive', 'true');
+                localStorage.setItem('membershipPlan', plan);
+                localStorage.setItem('membershipEmail', formData.email);
+                window.location.href = 'membership-dashboard.html';
+            } else {
+                alert('Error: ' + (data.message || 'Checkout failed'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Connection error. Please try again.');
+        });
+    }
+
+    // Format card number input
+    document.getElementById('cardNumber')?.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+        e.target.value = formattedValue;
+    });
+
+    // Format expiry input
+    document.getElementById('expiry')?.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        e.target.value = value;
+    });
+
+    // Initialize on page load
+    window.addEventListener('load', initializePlan);
+</script>
+
+</body>
+</html>

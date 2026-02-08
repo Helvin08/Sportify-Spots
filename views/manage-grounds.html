@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manage Grounds - Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/index.css" rel="stylesheet">
+  <script>
+    if (localStorage.getItem('loggedIn') !== 'true' || localStorage.getItem('isAdmin') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand">Manage Grounds</a>
+    <a class="btn btn-outline-light" href="admin.html">Back to Dashboard</a>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <h1 class="mb-4">Manage Sports Grounds</h1>
+
+  <button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#addGroundModal">+ Add New Ground</button>
+
+  <table class="table table-striped table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>Ground Name</th>
+        <th>Sport Type</th>
+        <th>Location</th>
+        <th>Price/Hour</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Elite Turf Arena</td>
+        <td>Football</td>
+        <td>Chennai</td>
+        <td>₹1500</td>
+        <td><span class="badge bg-success">Active</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="editGround(this)">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteGround(this)">Delete</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Green Field Cricket</td>
+        <td>Cricket</td>
+        <td>Mumbai</td>
+        <td>₹2000</td>
+        <td><span class="badge bg-success">Active</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="editGround(this)">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteGround(this)">Delete</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Ace Court</td>
+        <td>Badminton</td>
+        <td>Delhi</td>
+        <td>₹800</td>
+        <td><span class="badge bg-success">Active</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="editGround(this)">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteGround(this)">Delete</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Pro Turf Zone</td>
+        <td>Multi-Sport</td>
+        <td>Bangalore</td>
+        <td>₹1800</td>
+        <td><span class="badge bg-warning">Inactive</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="editGround(this)">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteGround(this)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Add Ground Modal -->
+<div class="modal fade" id="addGroundModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add New Ground</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addGroundForm">
+          <div class="mb-3">
+            <label class="form-label">Ground Name</label>
+            <input type="text" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Sport Type</label>
+            <select class="form-control" required>
+              <option>Cricket</option>
+              <option>Football</option>
+              <option>Badminton</option>
+              <option>Tennis</option>
+              <option>Basketball</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Location</label>
+            <input type="text" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Price per Hour (₹)</label>
+            <input type="number" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-control" required>
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="addNewGround()">Add Ground</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Ground Modal -->
+<div class="modal fade" id="editGroundModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Ground</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editGroundForm">
+          <input type="hidden" id="editRowIndex">
+          <div class="mb-3">
+            <label class="form-label">Ground Name</label>
+            <input type="text" id="editGroundName" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Sport Type</label>
+            <select id="editSportType" class="form-control" required>
+              <option>Cricket</option>
+              <option>Football</option>
+              <option>Badminton</option>
+              <option>Tennis</option>
+              <option>Basketball</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Location</label>
+            <input type="text" id="editLocation" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Price per Hour (₹)</label>
+            <input type="number" id="editPrice" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select id="editStatus" class="form-control" required>
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="saveEditGround()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function addNewGround() {
+    const name = document.querySelector('#addGroundForm input[type="text"]').value.trim();
+    const sport = document.querySelector('#addGroundForm select').value;
+    const location = document.querySelectorAll('#addGroundForm input[type="text"]')[1].value.trim();
+    const price = document.querySelector('#addGroundForm input[type="number"]').value.trim();
+    const status = document.querySelectorAll('#addGroundForm select')[1].value;
+
+    if (!name || !location || !price) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    const table = document.querySelector('tbody');
+    const newRow = document.createElement('tr');
+    const statusBadge = status === 'Active' ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-warning">Inactive</span>';
+    
+    newRow.innerHTML = `
+      <td>${name}</td>
+      <td>${sport}</td>
+      <td>${location}</td>
+      <td>₹${price}</td>
+      <td>${statusBadge}</td>
+      <td>
+        <button class="btn btn-sm btn-warning" onclick="editGround(this)">Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteGround(this)">Delete</button>
+      </td>
+    `;
+    
+    table.appendChild(newRow);
+    document.querySelector('#addGroundForm').reset();
+    const modal = bootstrap.Modal.getInstance(document.getElementById('addGroundModal'));
+    modal.hide();
+    alert('Ground added successfully!');
+  }
+
+  function deleteGround(btn) {
+    if (confirm('Are you sure you want to delete this ground?')) {
+      btn.closest('tr').remove();
+      alert('Ground deleted successfully!');
+    }
+  }
+
+  function editGround(btn) {
+    const row = btn.closest('tr');
+    const cells = row.querySelectorAll('td');
+    
+    document.getElementById('editRowIndex').value = Array.from(row.parentNode.children).indexOf(row);
+    document.getElementById('editGroundName').value = cells[0].textContent;
+    document.getElementById('editSportType').value = cells[1].textContent;
+    document.getElementById('editLocation').value = cells[2].textContent;
+    document.getElementById('editPrice').value = cells[3].textContent.replace('₹', '').trim();
+    document.getElementById('editStatus').value = cells[4].textContent.includes('Active') ? 'Active' : 'Inactive';
+    
+    const editModal = new bootstrap.Modal(document.getElementById('editGroundModal'));
+    editModal.show();
+  }
+
+  function saveEditGround() {
+    const rowIndex = document.getElementById('editRowIndex').value;
+    const name = document.getElementById('editGroundName').value.trim();
+    const sport = document.getElementById('editSportType').value;
+    const location = document.getElementById('editLocation').value.trim();
+    const price = document.getElementById('editPrice').value.trim();
+    const status = document.getElementById('editStatus').value;
+
+    if (!name || !location || !price) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    const rows = document.querySelectorAll('tbody tr');
+    const row = rows[rowIndex];
+    const statusBadge = status === 'Active' ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-warning">Inactive</span>';
+    
+    row.innerHTML = `
+      <td>${name}</td>
+      <td>${sport}</td>
+      <td>${location}</td>
+      <td>₹${price}</td>
+      <td>${statusBadge}</td>
+      <td>
+        <button class="btn btn-sm btn-warning" onclick="editGround(this)">Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteGround(this)">Delete</button>
+      </td>
+    `;
+
+    const editModal = bootstrap.Modal.getInstance(document.getElementById('editGroundModal'));
+    editModal.hide();
+    alert('Ground updated successfully!');
+  }
+</script>

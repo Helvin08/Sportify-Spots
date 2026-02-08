@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manage Users - Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/index.css" rel="stylesheet">
+  <script>
+    if (localStorage.getItem('loggedIn') !== 'true' || localStorage.getItem('isAdmin') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand">Manage Users</a>
+    <a class="btn btn-outline-light" href="admin.html">Back to Dashboard</a>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <h1 class="mb-4">User Management</h1>
+
+  <button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Add New User</button>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <input type="text" class="form-control" placeholder="Search users..." id="searchInput">
+    </div>
+  </div>
+
+  <table class="table table-striped table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>User ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Join Date</th>
+        <th>Bookings</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>#USR001</td>
+        <td>John Doe</td>
+        <td>john@example.com</td>
+        <td>+91 9876543210</td>
+        <td>Jan 15, 2026</td>
+        <td>5</td>
+        <td><span class="badge bg-success">Active</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="toggleUserStatus(this)">Deactivate</button>
+        </td>
+      </tr>
+      <tr>
+        <td>#USR002</td>
+        <td>Jane Smith</td>
+        <td>jane@example.com</td>
+        <td>+91 9876543211</td>
+        <td>Jan 20, 2026</td>
+        <td>3</td>
+        <td><span class="badge bg-success">Active</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="toggleUserStatus(this)">Deactivate</button>
+        </td>
+      </tr>
+      <tr>
+        <td>#USR003</td>
+        <td>Rajesh Kumar</td>
+        <td>rajesh@example.com</td>
+        <td>+91 9876543212</td>
+        <td>Jan 25, 2026</td>
+        <td>8</td>
+        <td><span class="badge bg-success">Active</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="toggleUserStatus(this)">Deactivate</button>
+        </td>
+      </tr>
+      <tr>
+        <td>#USR004</td>
+        <td>Priya Sharma</td>
+        <td>priya@example.com</td>
+        <td>+91 9876543213</td>
+        <td>Jan 10, 2026</td>
+        <td>2</td>
+        <td><span class="badge bg-danger">Inactive</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
+          <button class="btn btn-sm btn-success" onclick="toggleUserStatus(this)">Activate</button>
+        </td>
+      </tr>
+      <tr>
+        <td>#USR005</td>
+        <td>Arjun Nair</td>
+        <td>arjun@example.com</td>
+        <td>+91 9876543214</td>
+        <td>Feb 1, 2026</td>
+        <td>1</td>
+        <td><span class="badge bg-success">Active</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="toggleUserStatus(this)">Deactivate</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add New User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addUserForm">
+          <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-control" required>
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="addNewUser()">Add User</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Search functionality
+  document.getElementById('searchInput').addEventListener('keyup', function() {
+    const searchTerm = this.value.toLowerCase().trim();
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    tableRows.forEach(row => {
+      const rowText = row.textContent.toLowerCase();
+      if (searchTerm === '' || rowText.includes(searchTerm)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+
+  function addNewUser() {
+    const form = document.getElementById('addUserForm');
+    const name = form.querySelector('input[type="text"]').value.trim();
+    const email = form.querySelector('input[type="email"]').value.trim();
+    const phone = form.querySelector('input[type="tel"]').value.trim();
+    const password = form.querySelector('input[type="password"]').value.trim();
+    const status = form.querySelector('select').value;
+
+    if (!name || !email || !phone || !password) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    const table = document.querySelector('tbody');
+    const newRow = document.createElement('tr');
+    const userId = '#USR' + String(table.children.length + 1).padStart(3, '0');
+    const statusBadge = status === 'Active' ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
+    
+    newRow.innerHTML = `
+      <td>${userId}</td>
+      <td>${name}</td>
+      <td>${email}</td>
+      <td>${phone}</td>
+      <td>Feb 2, 2026</td>
+      <td>0</td>
+      <td>${statusBadge}</td>
+      <td>
+        <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
+        <button class="btn btn-sm ${status === 'Active' ? 'btn-danger' : 'btn-success'}" onclick="toggleUserStatus(this)">${status === 'Active' ? 'Deactivate' : 'Activate'}</button>
+      </td>
+    `;
+    
+    table.appendChild(newRow);
+    form.reset();
+    const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+    modal.hide();
+    alert('User added successfully!');
+  }
+
+  function editUser(btn) {
+    alert('Edit functionality coming soon!');
+  }
+
+  function toggleUserStatus(btn) {
+    const row = btn.closest('tr');
+    const statusCell = row.querySelector('td:nth-child(7)');
+    const currentStatus = statusCell.textContent.trim();
+
+    if (currentStatus === 'Active') {
+      if (confirm('Are you sure you want to deactivate this user?')) {
+        statusCell.innerHTML = '<span class="badge bg-danger">Inactive</span>';
+        btn.textContent = 'Activate';
+        btn.classList.remove('btn-danger');
+        btn.classList.add('btn-success');
+        alert('User deactivated successfully!');
+      }
+    } else {
+      if (confirm('Are you sure you want to activate this user?')) {
+        statusCell.innerHTML = '<span class="badge bg-success">Active</span>';
+        btn.textContent = 'Deactivate';
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-danger');
+        alert('User activated successfully!');
+      }
+    }
+  }
+</script>

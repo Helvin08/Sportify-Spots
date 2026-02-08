@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sport Spot - Available Grounds</title>
+  <link rel="icon" type="image/png" href="/Image/logo%20link.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="/css/index.css" rel="stylesheet">
+   <link href="/css/auth.css" rel="stylesheet">
+   <link href="/css/grounds.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="/Image/logo.png" alt="Logo" class="logo-img">
+        <div class="btn-shine">Sports Spots</div>
+    </div>
+    <nav>
+        <a id="homeLink" href="index.html">Home</a>
+        <button class="button1" onclick="window.location.href='membership.html'">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24">
+        <path d="m18 0 8 12 10-8-4 20H4L0 4l10 8 8-12z"></path>
+    </svg>
+    Membership
+</button>
+        <a href="grounds.html">Grounds</a> 
+        <a href="services.html">Service</a>
+        <a id="profileLink" href="profile.html" class="profile-pill" style="display: none;">👤 Profile</a>
+         <button class="button" id="loginBtn" onclick="window.location.href='login.html'">Login</button>
+    </nav>
+</header>
+
+<div class="grounds-container">
+  <h1 class="grounds-title">Available Sports Grounds</h1>
+  
+  <div class="search-container">
+    <input type="text" id="groundSearch" placeholder="Search by name or location...">
+    <button class="button" id="searchBtn">Search</button>
+  </div>
+
+  <div class="card-container">
+    <div class="ground-card">
+      <img src="/Image/Football.png" alt="Football Turf">
+      <div class="ground-card-body">
+        <span class="badge">Football</span>
+        <h5>Elite Turf Arena</h5>
+        <p>📍 Chennai</p>
+        <p class="price">₹1500 / hour</p>
+        <a href="ground-details.html" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+
+    <div class="ground-card">
+      <img src="/Image/Cricket.png" alt="Cricket Ground">
+      <div class="ground-card-body">
+        <span class="badge">Cricket</span>
+        <h5>Green Field Cricket</h5>
+        <p>📍 Mumbai</p>
+        <p class="price">₹2000 / hour</p>
+        <a href="ground-details.html" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+
+    <div class="ground-card">
+      <img src="/Image/Badminton.png" alt="Badminton Court">
+      <div class="ground-card-body">
+        <span class="badge">Badminton</span>
+        <h5>Ace Court</h5>
+        <p>📍 Delhi</p>
+        <p class="price">₹800 / hour</p>
+        <a href="ground-details.html" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+
+    <div class="ground-card">
+      <img src="/Image/turf.png" alt="Multi-Sport Turf">
+      <div class="ground-card-body">
+        <span class="badge">Multi-Sport</span>
+        <h5>Pro Turf Zone</h5>
+        <p>📍 Bangalore</p>
+        <p class="price">₹1800 / hour</p>
+        <a href="ground-details.html" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+
+    <div class="ground-card">
+      <img src="/Image/Basketball.png" alt="Basketball Court">
+      <div class="ground-card-body">
+        <span class="badge">Basketball</span>
+        <h5>Hoops Arena</h5>
+        <p>📍 Pune</p>
+        <p class="price">₹1200 / hour</p>
+        <a href="ground-details.html" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+
+    <div class="ground-card">
+      <img src="/Image/Tennis.png" alt="Tennis Court">
+      <div class="ground-card-body">
+        <span class="badge">Tennis</span>
+        <h5>Net Masters</h5>
+        <p>📍 Hyderabad</p>
+        <p class="price">₹1000 / hour</p>
+        <a href="ground-details.html" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Contact</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+        <div class="social-links">
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+    </div>
+    <p>© 2026 Sports Spots | Made by Helvsite</p>
+</footer>
+
+<script src="/js/supabase-config.js"></script>
+<script src="/js/auth-check.js"></script>
+<script>
+  (function(){
+    var homeLink = document.getElementById('homeLink');
+    if(homeLink) homeLink.href = (localStorage.getItem('loggedIn') === 'true') ? 'index.html' : 'index.html';
+
+    // Show profile link if logged in
+    var profileLink = document.getElementById('profileLink');
+    if(profileLink) profileLink.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'inline-block' : 'none';
+
+    // Hide login button if logged in
+    var loginBtn = document.getElementById('loginBtn');
+    if(loginBtn) loginBtn.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'none' : 'inline-block';
+
+    // Require login before viewing details / booking
+    document.querySelectorAll('.view-details-btn').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        var href = btn.getAttribute('href') || 'ground-details.html';
+        if (localStorage.getItem('loggedIn') !== 'true'){
+          e.preventDefault();
+          localStorage.setItem('redirectAfterLogin', href);
+          window.location.href = 'login.html';
+        }
+        // otherwise allow navigation
+      });
+    });
+    // Search functionality
+    var searchInput = document.getElementById('groundSearch');
+    var searchBtn = document.getElementById('searchBtn');
+    
+    function performSearch() {
+      var filter = searchInput.value.toLowerCase();
+      var cards = document.querySelectorAll('.ground-card');
+      
+      cards.forEach(function(card) {
+        var title = card.querySelector('h5').innerText.toLowerCase();
+        var location = card.querySelector('p').innerText.toLowerCase();
+        if (title.includes(filter) || location.includes(filter)) {
+          card.style.display = "";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+
+    if(searchBtn) searchBtn.addEventListener('click', performSearch);
+    if(searchInput) searchInput.addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') performSearch();
+    });
+
+  })();
+</script>
+
+</body>
+</html>

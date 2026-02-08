@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile | Sport Spot Booking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/index.css" rel="stylesheet">
+  <link href="/css/auth.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .profile-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 20px;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 32px;
+      margin-right: 20px;
+    }
+    .profile-info h2 {
+      margin: 0;
+      color: #333;
+      font-size: 24px;
+    }
+    .profile-info p {
+      margin: 5px 0 0 0;
+      color: #666;
+      font-size: 14px;
+    }
+    .profile-section {
+      margin-bottom: 30px;
+    }
+    .profile-section h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+      font-size: 18px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+    }
+    .profile-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .profile-item label {
+      font-weight: bold;
+      color: #333;
+    }
+    .profile-item span {
+      color: #666;
+    }
+    .btn-group-profile {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn-logout {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-logout:hover {
+      background-color: #c0392b;
+    }
+    .btn-back {
+      background-color: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-back:hover {
+      background-color: #5568d3;
+      text-decoration: none;
+      color: white;
+    }
+    .no-login {
+      text-align: center;
+      padding: 50px 20px;
+    }
+    .no-login h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .no-login p {
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .edit-form {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .edit-form input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .edit-form input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+    }
+    .btn-save {
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+    .btn-save:hover {
+      background-color: #229954;
+    }
+    .btn-cancel {
+      background-color: #95a5a6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-cancel:hover {
+      background-color: #7f8c8d;
+    }
+    .btn-edit {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      margin-right: 10px;
+    }
+    .btn-edit:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Sport Spot</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="grounds.html">Grounds</a>
+    <a href="membership.html" style="color: #667eea; font-weight: bold;">💎 Membership</a>
+    <a href="services.html">Service</a>
+    <a href="login.html" class="btn" id="loginBtn">Login</a>
+    <a href="signup.html" class="btn-outline">Sign Up</a>
+  </nav>
+</header>
+
+<div class="profile-container" id="profileContainer">
+  <!-- Content will be populated by JavaScript -->
+</div>
+
+<footer>
+  <p>© 2026 Sports Ground Booking | Made for You</p>
+</footer>
+
+<script src="/js/supabase-config.js"></script>
+<script src="/js/auth-check.js"></script>
+<script>
+(function(){
+  const profileContainer = document.getElementById('profileContainer');
+  const loginBtn = document.getElementById('loginBtn');
+  
+  // Check if user is logged in
+  const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+  
+  if(!isLoggedIn){
+    // Show login prompt
+    profileContainer.innerHTML = `
+      <div class="no-login">
+        <h2>Access Denied</h2>
+        <p>You need to be logged in to view your profile.</p>
+        <a href="login.html" class="btn-back" style="background-color: #667eea;">Go to Login</a>
+      </div>
+    `;
+    loginBtn.style.display = 'inline-block';
+    return;
+  }
+  
+  // Hide login button if logged in
+  loginBtn.style.display = 'none';
+  
+  // Get user info from localStorage
+  let userName = localStorage.getItem('userName') || 'User';
+  const userEmail = localStorage.getItem('userEmail') || 'email@example.com';
+  const userId = localStorage.getItem('userId') || '#USR000';
+  const isAdmin = localStorage.getItem('isAdmin') === 'true';
+  let userMobile = localStorage.getItem('userMobile') || '';
+  
+  let isEditMode = false;
+  
+  function renderProfile() {
+    // Determine avatar initial
+    const initial = userName.charAt(0).toUpperCase();
+    
+    // Build profile HTML
+    let profileHTML = `
+      <div class="profile-header">
+        <div class="profile-avatar">${initial}</div>
+        <div class="profile-info">
+          <h2>${userName}</h2>
+          <p>${isAdmin ? 'Administrator' : 'Member'} • ID: ${userId}</p>
+        </div>
+      </div>
+    `;
+    
+    if(isEditMode){
+      profileHTML += `
+        <div class="profile-section">
+          <h3>Edit Profile</h3>
+          <div class="edit-form">
+            <label style="font-weight: bold; display: block; margin-bottom: 8px;">Full Name</label>
+            <input type="text" id="editName" value="${userName}" placeholder="Enter your full name">
+            
+            <label style="font-weight: bold; display: block; margin-bottom: 8px;">Mobile Number</label>
+            <input type="tel" id="editMobile" value="${userMobile}" placeholder="Enter your mobile number">
+            
+            <div>
+              <button class="btn-save" id="saveBtn">Save Changes</button>
+              <button class="btn-cancel" id="cancelBtn">Cancel</button>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      profileHTML += `
+        <div class="profile-section">
+          <h3>Contact Information</h3>
+          <div class="profile-item">
+            <label>Email:</label>
+            <span>${userEmail}</span>
+          </div>
+          <div class="profile-item">
+            <label>Mobile:</label>
+            <span>${userMobile || 'Not provided'}</span>
+          </div>
+          <div class="profile-item">
+            <label>Account Type:</label>
+            <span>${isAdmin ? 'Administrator' : 'Regular User'}</span>
+          </div>
+        </div>
+      `;
+    }
+    
+    if(!isAdmin && !isEditMode){
+      profileHTML += `
+        <div class="profile-section">
+          <h3>Membership Status</h3>
+          <div class="profile-item">
+            <label>Status:</label>
+            <span>Active</span>
+          </div>
+          <div class="profile-item">
+            <label>Member Since:</label>
+            <span>2026</span>
+          </div>
+        </div>
+        
+        <div class="profile-section">
+          <h3>Quick Links</h3>
+          <div style="padding: 10px 0;">
+            <a href="view-bookings.html" class="btn-back" style="margin-right: 10px;">View Bookings</a>
+            <a href="grounds.html" class="btn-back">Browse Grounds</a>
+          </div>
+        </div>
+      `;
+    }
+    
+    profileHTML += `
+      <div class="btn-group-profile">
+        <a href="index.html" class="btn-back">Back to Home</a>
+        ${!isEditMode ? `<button class="btn-edit" id="editBtn">Edit Profile</button>` : ''}
+        <button class="btn-logout" id="logoutBtn">Logout</button>
+      </div>
+    `;
+    
+    profileContainer.innerHTML = profileHTML;
+    
+    // Add event listeners
+    if(!isEditMode){
+      document.getElementById('editBtn').addEventListener('click', function(){
+        isEditMode = true;
+        renderProfile();
+      });
+    } else {
+      document.getElementById('saveBtn').addEventListener('click', function(){
+        const newName = document.getElementById('editName').value.trim();
+        const newMobile = document.getElementById('editMobile').value.trim();
+        
+        if(!newName){
+          alert('Please enter a name.');
+          return;
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('userName', newName);
+        localStorage.setItem('userMobile', newMobile);
+        
+        userName = newName;
+        userMobile = newMobile;
+        isEditMode = false;
+        renderProfile();
+        alert('Profile updated successfully!');
+      });
+      
+      document.getElementById('cancelBtn').addEventListener('click', function(){
+        isEditMode = false;
+        renderProfile();
+      });
+    }
+    
+  // Add logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', async function(){
+      if (window.sbClient) {
+        await sbClient.auth.signOut();
+      }
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userMobile');
+      localStorage.removeItem('isAdmin');
+      alert('You have been logged out.');
+      window.location.href = 'index.html';
+    });
+  }
+  
+  // Initial render
+  renderProfile();
+})();
+</script>
+
+</body>
+</html>

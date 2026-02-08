@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login | Sports Spots Booking</title>
+  <link rel="icon" type="image/png" href="/Image/logo%20.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="/css/index.css" rel="stylesheet">
+  <link href="/css/auth.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<header>
+   <div class="logo-container">
+        <img src="/Image/logo.png" alt="Logo" class="logo-img">
+        <div class="btn-shine">Sports Spots</div>
+    </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="grounds.html">Grounds</a>
+    <a href="services.html">Service</a>
+  </nav>
+</header>
+<div class="auth-page">
+  <div class="auth-box">
+    <h2>Welcome Back</h2>
+    <p>Login to book your sports ground</p>
+
+    <form id="loginForm">
+      <div class="inputContainer">
+        <input required="required" id="email" placeholder="Email" type="email">
+        <label class="usernameLabel" for="email">Email</label>
+        <svg viewBox="0 0 448 512" class="userIcon"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"></path></svg>
+    </div>
+    <div class="inputContainer">
+        <input required="required" id="password" placeholder="Password" type="password">
+    </div>
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="google-login-container">
+      <div class="google-btn" id="googleLoginBtn">
+        <img src="/Image/google.png" alt="Google logo">
+        <span>Sign in with Google</span>
+      </div>
+    </div>
+
+    <div class="auth-links">
+      Don’t have an account? <a href="signup.html">Sign Up</a>
+    </div>
+  </div>
+</div>
+
+<script src="/js/supabase-config.js"></script>
+<script src="/js/auth-check.js"></script>
+<script>
+document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+  if (!window.sbClient) {
+    alert('Supabase client not initialized');
+    return;
+  }
+  const { data, error } = await sbClient.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin + '/login.html'
+    }
+  });
+  
+  if (error) {
+    alert('Google Login failed: ' + error.message);
+  }
+});
+
+document.getElementById('loginForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  
+  try {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const result = await response.json();
+    
+    if(result.success){
+      localStorage.setItem('loggedIn','true');
+      localStorage.setItem('isAdmin', result.user.isAdmin ? 'true' : 'false');
+      localStorage.setItem('userEmail', result.user.email);
+      localStorage.setItem('userId', result.user.id);
+      localStorage.setItem('userName', result.user.fullName);
+      
+      const redirect = localStorage.getItem('redirectAfterLogin');
+      if(redirect){
+        localStorage.removeItem('redirectAfterLogin');
+        window.location.href = redirect;
+      } else {
+        window.location.href = result.user.isAdmin ? 'admin.html' : 'index.html';
+      }
+    } else {
+      alert(result.message || 'Invalid email or password.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Login failed. Please try again.');
+  }
+});
+
+const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+if (forgotPasswordLink) {
+  forgotPasswordLink.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+      alert('Please enter your email address first.');
+      return;
+    }
+    
+    // Placeholder for Forgot Password logic
+    alert('Password reset link has been sent to ' + email + ' (Implementation pending API)');
+  });
+}
+</script>
+
+</body>
+</html>

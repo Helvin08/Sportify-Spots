@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Membership Plans - Sports Spots</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/index.css" rel="stylesheet">
+    <style>
+/* MEMBERSHIP SECTION */
+
+.membership-section {
+    padding: 70px 20px;
+    text-align: center;
+    background: #f5f7fa;
+}
+
+.membership-section h2 {
+    font-size: 32px;
+    color: #0a2540;
+}
+
+.sub-text {
+    color: #666;
+    margin-bottom: 50px;
+}
+
+.membership-cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* CARD BASE */
+.membership-card {
+    width: 300px;
+    padding: 30px;
+    border-radius: 18px;
+    background: white;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.membership-card:hover {
+    transform: translateY(-10px);
+}
+
+.membership-card h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* PRICE */
+.price {
+    font-size: 34px;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.price span {
+    font-size: 14px;
+    color: #777;
+}
+
+/* LIST */
+.membership-card ul {
+    list-style: none;
+    text-align: left;
+    margin: 25px 0;
+    padding: 0;
+}
+
+.membership-card ul li {
+    margin: 10px 0;
+    color: #444;
+}
+
+/* PRO CARD */
+.pro {
+    border-top: 6px solid #1abc9c;
+}
+
+.btn-pro {
+    background: #1abc9c;
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-pro:hover {
+    background: #16a085;
+}
+
+/* PRO PLUS CARD */
+.pro-plus {
+    background: linear-gradient(135deg, #0a2540, #1abc9c);
+    color: white;
+    transform: scale(1.05);
+}
+
+.pro-plus ul li {
+    color: #eafaf7;
+}
+
+.btn-plus {
+    background: white;
+    color: #0a2540;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-plus:hover {
+    background: #f1f1f1;
+}
+
+/* BADGE */
+.badge {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: gold;
+    color: #000;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .membership-cards {
+        gap: 20px;
+    }
+
+    .pro-plus {
+        transform: scale(1);
+    }
+}
+
+
+        .membership-sections {
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .membership-sections h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .membership-sections p {
+            font-size: 18px;
+            margin-bottom: 50px;
+        }
+        .plans-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 40px 20px;
+            margin: 0 auto;
+            max-width: 1200px;
+            gap: 30px;
+        }
+        .plan-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+        .plan-btn:hover {
+            background: #764ba2;
+            text-decoration: none;
+            color: white;
+        }
+        .benefits-section {
+            background: #f8f9fa;
+            padding: 60px 20px;
+        }
+        .benefits-section h2 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .benefit-item {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        .benefit-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        .benefit-item h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .benefit-item p {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Sport Spot</div>
+    <nav>
+        <a id="homeLink" href="index.html">Home</a>
+        <a href="grounds.html">Grounds</a>
+        <a href="services.html">Service</a>
+        <a id="profileLink" href="profile.html" style="display: none; color: #667eea; font-weight: bold;">👤 Profile</a>
+        <a href="login.html" class="btn" id="loginBtn">Login</a>
+        <a href="signup.html" class="btn-outline">Sign Up</a>
+    </nav>
+</header>
+
+<section class="membership-sections">
+    <h1>Premium Membership Plans</h1>
+    <p>Get exclusive benefits and unlock amazing discounts on ground bookings</p>
+</section>
+
+<section class="membership-section">
+    <h2>Choose Your Membership</h2>
+    <p class="sub-text">Unlock exclusive benefits and save more on every booking</p>
+
+    <div class="membership-cards">
+
+        <!-- PRO CARD -->
+        <div class="membership-card pro">
+            <h3>PRO</h3>
+            <p class="price">₹499 <span>/ month</span></p>
+
+            <ul>
+                <li>✔ 10% discount on bookings</li>
+                <li>✔ Early slot access</li>
+                <li>✔ Priority customer support</li>
+                <li>✔ Standard tournaments access</li>
+            </ul>
+
+            <button class="btn-pro">Get Pro</button>
+        </div>
+
+        <!-- PRO PLUS CARD -->
+        <div class="membership-card pro-plus">
+            <div class="badge">MOST POPULAR</div>
+            <h3>PRO PLUS</h3>
+            <p class="price">₹999 <span>/ month</span></p>
+
+            <ul>
+                <li>✔ 20% discount on bookings</li>
+                <li>✔ Free cancellation</li>
+                <li>✔ VIP support</li>
+                <li>✔ Premium tournaments</li>
+                <li>✔ Exclusive offers</li>
+            </ul>
+
+            <button class="btn-plus">Get Pro Plus</button>
+        </div>
+
+    </div>
+</section>
+
+
+<section class="benefits-section">
+    <h2>What You Get as a Member</h2>
+    <div class="benefits-grid">
+        <div class="benefit-item">
+            <div class="benefit-icon">💰</div>
+            <h3>20% Discount</h3>
+            <p>Save on every ground booking with exclusive member rates</p>
+        </div>
+        <div class="benefit-item">
+            <div class="benefit-icon">⚡</div>
+            <h3>Priority Booking</h3>
+            <p>Get first access to premium grounds and peak time slots</p>
+        </div>
+        <div class="benefit-item">
+            <div class="benefit-icon">📅</div>
+            <h3>Flexible Cancellation</h3>
+            <p>Cancel or pause membership anytime, no hidden charges</p>
+        </div>
+        <div class="benefit-item">
+            <div class="benefit-icon">🎯</div>
+            <h3>Exclusive Events</h3>
+            <p>Join members-only tournaments and special events</p>
+        </div>
+        <div class="benefit-item">
+            <div class="benefit-icon">📊</div>
+            <h3>Booking History</h3>
+            <p>Track all your bookings and spending in one place</p>
+        </div>
+        <div class="benefit-item">
+            <div class="benefit-icon">🤝</div>
+            <h3>Priority Support</h3>
+            <p>Get dedicated support for any issues or questions</p>
+        </div>
+    </div>
+</section>
+
+<footer style="background: #333; color: white; text-align: center; padding: 20px;">
+    <p>&copy; 2026 Sports Spots. All rights reserved.</p>
+</footer>
+
+<script>
+  (function(){
+    // Set home link
+    var homeLink = document.getElementById('homeLink');
+    if(homeLink) homeLink.href = 'index.html';
+
+    // Show profile link if logged in
+    var profileLink = document.getElementById('profileLink');
+    if(profileLink) profileLink.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'inline-block' : 'none';
+
+    // Hide login button if logged in
+    var loginBtn = document.getElementById('loginBtn');
+    if(loginBtn) loginBtn.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'none' : 'inline-block';
+  })();
+</script>
+
+</body>
+</html>
