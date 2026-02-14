@@ -9,7 +9,7 @@ Complete membership management system for the Sports Spots ground booking platfo
 - **Annual Plan**: $30/year (Save 75%)
 
 ### Member Benefits
-- 20% discount on all ground bookings
+- 10-20% discount on all ground bookings
 - Priority booking access to peak time slots
 - Priority email & chat support
 - Flexible cancellation anytime
@@ -119,7 +119,7 @@ Response:
     "status": "active",
     "purchaseDate": "2026-02-03T12:00:00Z",
     "renewalDate": "2027-02-03T12:00:00Z",
-    "discountPercentage": 20,
+    "discountPercentage": 10 | 20,
     "totalBookings": 12,
     "totalSavings": 2400
   }
@@ -168,7 +168,7 @@ Response:
   "success": true,
   "isActiveMember": true,
   "plan": "yearly",
-  "discountPercentage": 20
+  "discountPercentage": 10 | 20
 }
 ```
 
@@ -200,7 +200,7 @@ Response:
     "originalPrice": 1500,
     "discountAmount": 300,
     "finalPrice": 1200,
-    "discountPercentage": 20
+    "discountPercentage": 10 | 20
   }
 }
 ```
@@ -280,7 +280,7 @@ Response:
   "status": "active",
   "purchaseDate": "2026-02-03T12:00:00Z",
   "renewalDate": "2027-02-03T12:00:00Z",
-  "discountPercentage": 20,
+  "discountPercentage": 10 | 20,
   "totalBookings": 12,
   "totalSavings": 2400,
   "createdAt": "2026-02-03T12:00:00Z",

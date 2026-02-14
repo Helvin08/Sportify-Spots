@@ -389,7 +389,7 @@ Three comprehensive documents included:
 ### For Members
 ✓ Easy plan selection  
 ✓ Simple checkout  
-✓ 20% discount on all bookings  
+✓ 10-20% discount on all bookings  
 ✓ Priority booking access  
 ✓ View booking history  
 ✓ Track total savings  

@@ -1,13 +1,14 @@
 [project]
-name = "sports-spots-backend"
+name = "sportify-spots-backend"
 version = "0.1.0"
-description = "Minimal Flask backend for Sports Spots"
+description = "Minimal Flask backend for Sportify Spots"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "flask>=3.0.0",
     "flask-cors>=4.0.0",
     "python-dotenv>=1.0.0",
+    "razorpay>=2.0.0",
     "supabase>=2.3.0",
 ]
 

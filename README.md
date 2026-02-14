@@ -1,6 +1,6 @@
-# Sport Spot 🏟️
+# Sportify Spots 🏟️
 
-Sport Spot is a modern and user-friendly sports ground booking website that helps players easily find and book sports facilities such as cricket grounds, football turfs, and badminton courts.
+Sportify Spots is a modern and user-friendly sports ground booking website that helps players easily find and book sports facilities such as cricket grounds, football turfs, and badminton courts.
 
 ## 🚀 Features
 - Search sports grounds by sport, city, and date

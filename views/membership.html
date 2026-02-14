@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Membership Plans - Sports Spots</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membership Plans | Sportify Spots</title>
+     <link rel="icon" type="image/png" href="/Image/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/index.css" rel="stylesheet">
+    <link href="/css/chatbot.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
 /* MEMBERSHIP SECTION */
 
 .membership-section {
     padding: 70px 20px;
     text-align: center;
-    background: #f5f7fa;
+    background: #F3EFE4; /* Match main body bg */
 }
 
 .membership-section h2 {
     font-size: 32px;
-    color: #0a2540;
+    color: #1f4f46;
 }
 
 .sub-text {
@@ -39,15 +44,18 @@
     box-shadow: 0 20px 35px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
     position: relative;
+    border: 2px solid white;
 }
 
 .membership-card:hover {
     transform: translateY(-10px);
+    border-color: #1abc9c;
 }
 
 .membership-card h3 {
     font-size: 24px;
     margin-bottom: 10px;
+    color: #1f4f46;
 }
 
 /* PRICE */
@@ -55,6 +63,7 @@
     font-size: 34px;
     font-weight: bold;
     margin: 15px 0;
+    color: #1f4f46;
 }
 
 .price span {
@@ -89,17 +98,28 @@
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
+    transition: 0.3s;
 }
 
 .btn-pro:hover {
     background: #16a085;
+    transform: scale(1.02);
 }
 
 /* PRO PLUS CARD */
 .pro-plus {
-    background: linear-gradient(135deg, #0a2540, #1abc9c);
+    background: linear-gradient(135deg, #1f4f46, #1abc9c);
     color: white;
     transform: scale(1.05);
+    border: none;
+}
+
+.pro-plus h3, .pro-plus .price {
+    color: white;
+}
+
+.pro-plus .price span {
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .pro-plus ul li {
@@ -107,18 +127,20 @@
 }
 
 .btn-plus {
-    background: white;
-    color: #0a2540;
+    background: #FACC15;
+    color: #1f4f46;
     border: none;
     padding: 12px;
     width: 100%;
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
+    transition: 0.3s;
 }
 
 .btn-plus:hover {
-    background: #f1f1f1;
+    background: #e5b813;
+    transform: scale(1.02);
 }
 
 /* BADGE */
@@ -126,12 +148,13 @@
     position: absolute;
     top: -12px;
     right: 20px;
-    background: gold;
-    color: #000;
+    background: #FACC15;
+    color: #1f4f46;
     padding: 5px 10px;
     font-size: 12px;
     font-weight: bold;
     border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 /* RESPONSIVE */
@@ -147,9 +170,9 @@
 
 
         .membership-sections {
-            padding: 60px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 80px 20px;
+            background: linear-gradient(#1F4F46 ,#245d52 ,#2a6b5f);
+            color: #F3EFE4;
             text-align: center;
         }
         .membership-sections h1 {
@@ -170,25 +193,8 @@
             max-width: 1200px;
             gap: 30px;
         }
-        .plan-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            width: 100%;
-        }
-        .plan-btn:hover {
-            background: #764ba2;
-            text-decoration: none;
-            color: white;
-        }
         .benefits-section {
-            background: #f8f9fa;
+            background: #F3EFE4;
             padding: 60px 20px;
         }
         .benefits-section h2 {
@@ -196,7 +202,7 @@
             margin-bottom: 50px;
             font-size: 36px;
             font-weight: bold;
-            color: #333;
+            color: #1f4f46;
         }
         .benefits-grid {
             display: grid;
@@ -212,6 +218,7 @@
             border-radius: 10px;
             text-align: center;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-bottom: 4px solid #1abc9c;
         }
         .benefit-icon {
             font-size: 40px;
@@ -220,7 +227,7 @@
         .benefit-item h3 {
             font-size: 20px;
             margin-bottom: 10px;
-            color: #333;
+            color: #1f4f46;
         }
         .benefit-item p {
             color: #666;
@@ -231,14 +238,27 @@
 <body>
 
 <header>
-    <div class="logo">Sport Spot</div>
-    <nav>
+    <div class="logo-container">
+        <img src="/Image/logo.png" alt="Logo" class="logo-img">
+        <div class="btn-shine">Sportify Spots</div>
+    </div>
+    <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+    <nav id="nav-menu">
         <a id="homeLink" href="index.html">Home</a>
-        <a href="grounds.html">Grounds</a>
+        <button class="button1" onclick="window.location.href='membership.html'">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24">
+        <path d="m18 0 8 12 10-8-4 20H4L0 4l10 8 8-12z"></path>
+    </svg>
+    Membership
+</button>
+        <a href="grounds.html">Grounds</a> 
         <a href="services.html">Service</a>
-        <a id="profileLink" href="profile.html" style="display: none; color: #667eea; font-weight: bold;">👤 Profile</a>
-        <a href="login.html" class="btn" id="loginBtn">Login</a>
-        <a href="signup.html" class="btn-outline">Sign Up</a>
+        <a id="profileLink" href="profile.html" class="profile-pill" style="display: none;">👤 Profile</a>
+         <button class="button" id="loginBtn" onclick="window.location.href='login.html'">Login</button>
     </nav>
 </header>
 
@@ -263,9 +283,10 @@
                 <li>✔ Early slot access</li>
                 <li>✔ Priority customer support</li>
                 <li>✔ Standard tournaments access</li>
+                <li>✔ <b>Special:</b> Referral bonuses</li>
             </ul>
 
-            <button class="btn-pro">Get Pro</button>
+            <button class="btn-pro" onclick="window.location.href='membership-checkout.html?plan=monthly'">Get Pro</button>
         </div>
 
         <!-- PRO PLUS CARD -->
@@ -279,22 +300,44 @@
                 <li>✔ Free cancellation</li>
                 <li>✔ VIP support</li>
                 <li>✔ Premium tournaments</li>
-                <li>✔ Exclusive offers</li>
+                <li>✔ <b>Offer:</b> ₹100 off on 1st booking</li>
+                <li>✔ Exclusive monthly gear raffles</li>
             </ul>
 
-            <button class="btn-plus">Get Pro Plus</button>
+            <button class="btn-plus" onclick="window.location.href='membership-checkout.html?plan=pro-plus'">Get Pro Plus</button>
         </div>
 
     </div>
 </section>
 
 
+<section class="benefits-section" style="background: white;">
+    <h2>Limited Time Member Offers</h2>
+    <div class="benefits-grid">
+        <div class="benefit-item" style="border-bottom-color: #FACC15;">
+            <div class="benefit-icon">🎁</div>
+            <h3>Welcome Bonus</h3>
+            <p>Pro Plus members get ₹100 flat discount on their first ground booking automatically!</p>
+        </div>
+        <div class="benefit-item" style="border-bottom-color: #FACC15;">
+            <div class="benefit-icon">🏸</div>
+            <h3>Free Equipment</h3>
+            <p>Rent basic equipment for free for your first 3 bookings as a member.</p>
+        </div>
+        <div class="benefit-item" style="border-bottom-color: #FACC15;">
+            <div class="benefit-icon">🥤</div>
+            <h3>Free Hydration</h3>
+            <p>Show your membership card at any ground to get 2 free energy drinks per booking.</p>
+        </div>
+    </div>
+</section>
+
 <section class="benefits-section">
     <h2>What You Get as a Member</h2>
     <div class="benefits-grid">
         <div class="benefit-item">
             <div class="benefit-icon">💰</div>
-            <h3>20% Discount</h3>
+            <h3>Up to 20% Discount</h3>
             <p>Save on every ground booking with exclusive member rates</p>
         </div>
         <div class="benefit-item">
@@ -325,23 +368,100 @@
     </div>
 </section>
 
-<footer style="background: #333; color: white; text-align: center; padding: 20px;">
-    <p>&copy; 2026 Sports Spots. All rights reserved.</p>
+<footer>
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Contact</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+        <div class="social-links">
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+    </div>
+    <p>© 2026 Sportify Spots | Made by Helvsite</p>
 </footer>
 
+<script src="/js/supabase-config.js"></script>
+<script src="/js/auth-check.js"></script>
+<script src="/js/chatbot.js"></script>
 <script>
-  (function(){
+  (async function(){
     // Set home link
     var homeLink = document.getElementById('homeLink');
     if(homeLink) homeLink.href = 'index.html';
 
-    // Show profile link if logged in
-    var profileLink = document.getElementById('profileLink');
-    if(profileLink) profileLink.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'inline-block' : 'none';
+    // Mobile Menu Toggle
+    var mobileMenu = document.getElementById('mobile-menu');
+    var navMenu = document.getElementById('nav-menu');
+    if(mobileMenu && navMenu) {
+        mobileMenu.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
 
-    // Hide login button if logged in
-    var loginBtn = document.getElementById('loginBtn');
-    if(loginBtn) loginBtn.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'none' : 'inline-block';
+    // Check membership status
+    const userEmail = localStorage.getItem('userEmail');
+    if (userEmail) {
+        try {
+            const response = await fetch('/api/membership/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail })
+            });
+            const data = await response.json();
+            
+            if (data.success && data.isActiveMember) {
+                // User is already a member
+                const cardsContainer = document.querySelector('.membership-cards');
+                const subText = document.querySelector('.sub-text');
+                
+                if (subText) {
+                    subText.innerHTML = `You are currently a <strong style="color: #1abc9c;">${data.plan.toUpperCase()}</strong> member. <br>Manage your subscription below.`;
+                }
+                
+                if (cardsContainer) {
+                    cardsContainer.innerHTML = `
+                        <div class="membership-card pro-plus" style="width: 100%; max-width: 500px;">
+                            <h3>Active Membership</h3>
+                            <p class="price" style="font-size: 24px;">Plan: ${data.plan.toUpperCase()}</p>
+                            <p>You are enjoying ${data.discountPercentage}% discount on all bookings!</p>
+                            <div style="margin-top: 20px; display: flex; gap: 15px; justify-content: center;">
+                                <button class="btn-plus" onclick="window.location.href='profile.html'">View Profile</button>
+                                <button class="btn-plus" id="cancelMembershipBtn" style="background: #e74c3c; color: white;">Cancel Membership</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('cancelMembershipBtn').addEventListener('click', async function() {
+                        if (confirm('Are you sure you want to cancel your membership?')) {
+                            try {
+                                const delResponse = await fetch(`/api/membership/${userEmail}`, {
+                                    method: 'DELETE'
+                                });
+                                const delData = await delResponse.json();
+                                if (delData.success) {
+                                    alert('Membership cancelled successfully.');
+                                    window.location.reload();
+                                } else {
+                                    alert('Error: ' + delData.message);
+                                }
+                            } catch (err) {
+                                console.error(err);
+                                alert('Failed to cancel membership.');
+                            }
+                        }
+                    });
+                }
+            }
+        } catch (err) {
+            console.error('Error verifying membership:', err);
+        }
+    }
   })();
 </script>
 

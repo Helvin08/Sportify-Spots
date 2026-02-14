@@ -4,6 +4,7 @@ from flask_cors import CORS
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from supabase import create_client, Client
+import razorpay
 
 # Load environment variables
 load_dotenv()
@@ -21,10 +22,15 @@ CORS(app)
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
+# Razorpay Configuration
+RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "YOUR_KEY_ID")
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "YOUR_KEY_SECRET")
+
 if not SUPABASE_URL or not SUPABASE_KEY:
     print("Warning: SUPABASE_URL or SUPABASE_KEY not found in environment variables.")
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
+rz_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 
 # ============ STATIC FILES SERVING ============
 
@@ -132,11 +138,59 @@ def verify_membership():
                 "success": True,
                 "isActiveMember": True,
                 "plan": member.get('plan'),
-                "discountPercentage": member.get('discountPercentage', 0)
+                "discountPercentage": member.get('discountPercentage', 0),
+                "hasFirstBookingOffer": member.get('hasFirstBookingOffer', False),
+                "totalBookings": member.get('totalBookings', 0),
+                "totalSavings": member.get('totalSavings', 0)
             })
         return jsonify({"success": True, "isActiveMember": False})
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
+
+@app.route('/api/membership/create-order', methods=['POST'])
+def create_membership_order():
+    data = request.json
+    plan = data.get('plan', 'monthly')
+    
+    # Prices in INR (will convert to paise)
+    prices = {
+        'monthly': 499,
+        'pro-plus': 999,
+        'yearly': 4999 # Assuming a yearly price
+    }
+    
+    amount = prices.get(plan, 499) * 100 # Razorpay expects amount in paise
+    
+    try:
+        order_data = {
+            'amount': amount,
+            'currency': 'INR',
+            'payment_capture': 1 # Auto capture
+        }
+        order = rz_client.order.create(data=order_data)
+        return jsonify({
+            "success": True, 
+            "order_id": order['id'], 
+            "amount": amount,
+            "key_id": RAZORPAY_KEY_ID
+        })
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+@app.route('/api/membership/verify-payment', methods=['POST'])
+def verify_membership_payment():
+    data = request.json
+    try:
+        # Verify signature
+        params_dict = {
+            'razorpay_order_id': data.get('razorpay_order_id'),
+            'razorpay_payment_id': data.get('razorpay_payment_id'),
+            'razorpay_signature': data.get('razorpay_signature')
+        }
+        rz_client.utility.verify_payment_signature(params_dict)
+        return jsonify({"success": True, "message": "Payment verified successfully"})
+    except Exception as e:
+        return jsonify({"success": False, "message": "Payment verification failed"}), 400
 
 @app.route('/api/membership/checkout', methods=['POST'])
 def checkout():
@@ -147,20 +201,43 @@ def checkout():
     if not all(k in data for k in required):
         return jsonify({"success": False, "message": "Missing required fields"}), 400
     email = data['email']
-    renewal_date = (datetime.now() + (timedelta(days=365) if data['plan'] == 'yearly' else timedelta(days=30))).isoformat()
+    plan = data.get('plan', 'monthly')
+    
+    # Determine discount based on plan
+    discount_percentage = 10
+    if plan == 'pro-plus' or plan == 'yearly':
+        discount_percentage = 20
+        
+    renewal_date = (datetime.now() + (timedelta(days=365) if plan == 'yearly' else timedelta(days=30))).isoformat()
     try:
         existing = supabase.table("members").select("*").eq("email", email).execute()
         member_data = {
             "fullName": data['fullName'],
             "phone": data['phone'],
-            "plan": data['plan'],
+            "plan": plan,
             "status": "active",
             "purchaseDate": datetime.now().isoformat(),
             "renewalDate": renewal_date,
-            "discountPercentage": 20,
+            "discountPercentage": discount_percentage,
         }
+        
+        # Try to add special offer field, but don't fail if column doesn't exist yet
+        try:
+            # We add it conditionally to avoid schema errors if user hasn't added the column
+            member_data["hasFirstBookingOffer"] = True if plan == 'pro-plus' else False
+        except:
+            pass
+            
         if existing.data:
-            supabase.table("members").update(member_data).eq("email", email).execute()
+            try:
+                supabase.table("members").update(member_data).eq("email", email).execute()
+            except Exception as e:
+                # If it fails due to the new column, try updating without it
+                if "hasFirstBookingOffer" in str(e):
+                    member_data.pop("hasFirstBookingOffer", None)
+                    supabase.table("members").update(member_data).eq("email", email).execute()
+                else:
+                    raise e
         else:
             member_data.update({
                 "email": email,
@@ -168,8 +245,38 @@ def checkout():
                 "totalSavings": 0,
                 "createdAt": datetime.now().isoformat()
             })
-            supabase.table("members").insert(member_data).execute()
+            try:
+                supabase.table("members").insert(member_data).execute()
+            except Exception as e:
+                if "hasFirstBookingOffer" in str(e):
+                    member_data.pop("hasFirstBookingOffer", None)
+                    supabase.table("members").insert(member_data).execute()
+                else:
+                    raise e
         return jsonify({"success": True, "message": "Membership activated successfully!", "email": email})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+@app.route('/api/bookings/create-order', methods=['POST'])
+def create_booking_order():
+    data = request.json
+    try:
+        amount = int(float(data.get('amount', 0)) * 100) # Razorpay expects amount in paise
+        if amount <= 0:
+            return jsonify({"success": False, "message": "Invalid amount"}), 400
+            
+        order_data = {
+            'amount': amount,
+            'currency': 'INR',
+            'payment_capture': 1
+        }
+        order = rz_client.order.create(data=order_data)
+        return jsonify({
+            "success": True, 
+            "order_id": order['id'], 
+            "amount": amount,
+            "key_id": RAZORPAY_KEY_ID
+        })
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 
@@ -191,24 +298,89 @@ def create_booking():
             price = 0.0
             
         discount = (price * member['discountPercentage']) / 100
-        final_price = price - discount
+        
+        # Apply special first booking offer for Pro Plus members
+        extra_offer = 0
+        if member.get('hasFirstBookingOffer') and member.get('totalBookings', 0) == 0:
+            extra_offer = 100 # ₹100 flat off on first booking
+            discount += extra_offer
+            
+        final_price = max(0, price - discount)
         booking = {
             "memberId": member['id'],
             "email": email,
             "groundName": data.get('groundName'),
             "originalPrice": price,
             "discount": discount,
+            "extraOffer": extra_offer,
             "finalPrice": final_price,
             "status": "confirmed",
             "createdAt": datetime.now().isoformat()
         }
         supabase.table("bookings").insert(booking).execute()
+        
+        # Update member stats and consume the offer if used
         new_stats = {
             "totalBookings": member.get('totalBookings', 0) + 1,
             "totalSavings": member.get('totalSavings', 0) + discount
         }
-        supabase.table("members").update(new_stats).eq("email", email).execute()
+        if extra_offer > 0:
+            new_stats["hasFirstBookingOffer"] = False
+            
+        try:
+            supabase.table("members").update(new_stats).eq("email", email).execute()
+        except Exception as e:
+            # If update fails due to missing column, retry without it
+            if "hasFirstBookingOffer" in str(e):
+                new_stats.pop("hasFirstBookingOffer", None)
+                supabase.table("members").update(new_stats).eq("email", email).execute()
+            else:
+                raise e
         return jsonify({"success": True, "message": "Booking confirmed!", "booking": booking})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+@app.route('/api/bookings/verify-payment', methods=['POST'])
+def verify_booking_payment():
+    data = request.json
+    try:
+        params_dict = {
+            'razorpay_order_id': data.get('razorpay_order_id'),
+            'razorpay_payment_id': data.get('razorpay_payment_id'),
+            'razorpay_signature': data.get('razorpay_signature')
+        }
+        rz_client.utility.verify_payment_signature(params_dict)
+        return jsonify({"success": True, "message": "Payment verified successfully"})
+    except Exception as e:
+        return jsonify({"success": False, "message": "Payment verification failed"}), 400
+
+@app.route('/api/membership/<email>', methods=['DELETE'])
+def cancel_membership(email):
+    if not supabase:
+        return jsonify({"success": False, "message": "Supabase not configured"}), 500
+    try:
+        # Check if member exists
+        response = supabase.table("members").select("*").eq("email", email).execute()
+        if not response.data:
+            return jsonify({"success": False, "message": "Member not found"}), 404
+        
+        # Update status to cancelled
+        update_data = {
+            "status": "cancelled",
+            "cancelledAt": datetime.now().isoformat()
+        }
+        
+        try:
+            supabase.table("members").update(update_data).eq("email", email).execute()
+        except Exception as e:
+            # If cancelledAt column doesn't exist, try updating just the status
+            if "cancelledAt" in str(e):
+                update_data.pop("cancelledAt")
+                supabase.table("members").update(update_data).eq("email", email).execute()
+            else:
+                raise e
+        
+        return jsonify({"success": True, "message": "Membership cancelled successfully"})
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 

@@ -1,8 +1,8 @@
 @echo off
-REM Setup script for Sports Spots Membership System (Windows)
+REM Setup script for Sportify Spots Membership System (Windows)
 
 echo.
-echo 🚀 Sports Spots Membership System - Setup Guide
+echo 🚀 Sportify Spots Membership System - Setup Guide
 echo ================================================
 echo.
 

@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sports Spots Booking</title>
-  <link rel="icon" type="image/png" href="/Image/logo%20.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sportify Spots</title>
+  <link rel="icon" type="image/png" href="/Image/logo.png">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/css/index.css" rel="stylesheet">
+  <link href="/css/chatbot.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -12,9 +15,14 @@
 <header>
     <div class="logo-container">
         <img src="/Image/logo.png" alt="Logo" class="logo-img">
-        <div class="btn-shine">Sports Spots</div>
+        <div class="btn-shine">Sportify Spots</div>
     </div>
-    <nav>
+    <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+    <nav id="nav-menu">
         <a id="homeLink" href="index.html">Home</a>
         <button class="button1" onclick="window.location.href='membership.html'">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24">
@@ -30,7 +38,7 @@
 </header>
 
 <section class="hero">
-    <h1>Book Sports Grounds Anytime, Anywhere</h1>
+    <h1>Play Together. Win Together</h1>
     <p>Cricket • Football • Badminton • Turf</p>
 
     <div class="search-box">
@@ -58,24 +66,24 @@
     <p class="text-body">📍 Chennai</p>
     <p class="text-body">₹1500 / hour</p>
   </div>
-  <button class="card-button" onclick="window.location.href='ground-details.html'">Book Now</button>
+  <button class="card-button" onclick="window.location.href='ground-details.html?id=elite-turf'">Book Now</button>
 </div>
 
         <div class="card">
             <div class="card-details">
-            <h3 class="text-title">City Football Turf</h3>
-            <p class="text-body">📍 Bangalore</p>
+            <h3 class="text-title">Kochi Sports Hub</h3>
+            <p class="text-body">📍 Kochi</p>
             <p class="text-body">₹2000 / hour</p>
-            <button class="card-button" onclick="window.location.href='ground-details.html'">Book Now</button>
+            <button class="card-button" onclick="window.location.href='ground-details.html?id=pro-turf'">Book Now</button>
             </div>
         </div>
 
         <div class="card">
             <div class="card-details">   
-                <h3 class="text-title">Pro Badminton Court</h3>
-                <p class="text-body">📍 Hyderabad</p>
-                <p class="text-body">₹500 / hour</p>
-                <button class="card-button" onclick="window.location.href='ground-details.html'">Book Now</button>
+                <h3 class="text-title">Bangalore Smash Court</h3>
+                <p class="text-body">📍 Bangalore</p>
+                <p class="text-body">₹800 / hour</p>
+                <button class="card-button" onclick="window.location.href='ground-details.html?id=Net-Masters'">Book Now</button>
             </div>
         </div>
     </div>
@@ -184,29 +192,28 @@
             <a href="#">Instagram</a>
         </div>
     </div>
-    <p>© 2026 Sports Spots | Made by Helvsite</p>
+    <p>© 2026 Sportify Spots | Made by Helvsite</p>
 </footer>
 
 </body>
 <script src="/js/supabase-config.js"></script>
 <script src="/js/auth-check.js"></script>
+<script src="/js/chatbot.js"></script>
 <script>
     (function(){
         // Update Home link to user home when logged in
         var homeLink = document.getElementById('homeLink');
         if(homeLink) homeLink.href = (localStorage.getItem('loggedIn') === 'true') ? 'index.html' : 'index.html';
 
-        // Show profile link if logged in
-        var profileLink = document.getElementById('profileLink');
-        if(profileLink) profileLink.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'inline-block' : 'none';
-
-        // Hide login button if logged in
-        var loginBtn = document.getElementById('loginBtn');
-        if(loginBtn) loginBtn.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'none' : 'inline-block';
-
-        // Show admin link if present
-        var adminLink = document.getElementById('adminLink');
-        if(adminLink) adminLink.style.display = (localStorage.getItem('isAdmin') === 'true') ? 'inline-block' : 'none';
+        // Mobile Menu Toggle
+        var mobileMenu = document.getElementById('mobile-menu');
+        var navMenu = document.getElementById('nav-menu');
+        if(mobileMenu && navMenu) {
+            mobileMenu.addEventListener('click', function() {
+                mobileMenu.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
 
         // Search button functionality
         var searchBtn = document.getElementById('searchBtn');
@@ -218,23 +225,26 @@
                 var date = document.getElementById('dateInput').value;
                 
                 if(!city || !date) {
-                    alert('Please enter both city and date to search.');
+                    showToast('Please enter both city and date to search.', 'warning');
                     return;
                 }
                 
-                alert('Searching for ' + sport + ' grounds in ' + city + ' on ' + date);
-                window.location.href = 'grounds.html';
+                showToast('Searching for ' + sport + ' grounds in ' + city + '...', 'info');
+                setTimeout(() => window.location.href = 'grounds.html', 1500);
             });
         }
 
         // Require login before booking: if not logged in, save intended destination and redirect to login
-        document.querySelectorAll('.btn-book').forEach(function(btn){
+        document.querySelectorAll('.card-button').forEach(function(btn){
             btn.addEventListener('click', function(e){
-                var href = btn.getAttribute('href') || 'ground-details.html';
+                var href = btn.getAttribute('onclick') ? btn.getAttribute('onclick').match(/'([^']+)'/)[1] : 'ground-details.html';
                 if (localStorage.getItem('loggedIn') !== 'true'){
                     e.preventDefault();
-                    localStorage.setItem('redirectAfterLogin', href);
-                    window.location.href = 'login.html';
+                    showToast('Please Login to book a ground', 'warning');
+                    setTimeout(() => {
+                        localStorage.setItem('redirectAfterLogin', href);
+                        window.location.href = 'login.html';
+                    }, 1500);
                 }
             });
         });
@@ -245,10 +255,10 @@
             newsletterBtn.addEventListener('click', function(){
                 var email = document.getElementById('newsletterEmail').value.trim();
                 if(email && email.includes('@')) {
-                    alert('Thank you for subscribe with ' + email + '!');
+                    showToast('Thank you for subscribing with ' + email + '!', 'success');
                     document.getElementById('newsletterEmail').value = '';
                 } else {
-                    alert('Please enter a valid email address.');
+                    showToast('Please enter a valid email address.', 'error');
                 }
             });
         }

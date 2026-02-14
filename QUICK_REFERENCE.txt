@@ -41,8 +41,8 @@ Open browser: `http://localhost:8000/membership.html`
 
 | Plan | Price | Discount | Renewal |
 |------|-------|----------|---------|
-| Monthly | $10/mo | 20% | Monthly |
-| Yearly | $30/yr | 20% | Annual |
+| PRO | ₹499/mo | 10% | Monthly |
+| PRO PLUS | ₹999/mo | 20% | Annual |
 
 ---
 
@@ -87,7 +87,7 @@ node admin-cli.js clear-data --yes    # Delete all
 2. **Checkout** → `membership-checkout.html` fill form
 3. **Process** → Server creates member, saves to JSON
 4. **Dashboard** → `membership-dashboard.html` show benefits
-5. **Booking** → 20% discount applied automatically
+5. **Booking** → 10-20% discount applied automatically
 6. **Savings** → Tracked and displayed
 
 ---
@@ -95,7 +95,7 @@ node admin-cli.js clear-data --yes    # Delete all
 ## ✅ Key Features
 
 ✓ Monthly & yearly plans  
-✓ 20% automatic discounts  
+✓ 10-20% automatic discounts  
 ✓ Booking history  
 ✓ Savings tracking  
 ✓ Admin CLI tool  
@@ -240,7 +240,7 @@ fetch('/api/membership/checkout', {
 
 ---
 
-## 📊 Member Discount Example
+## 📊 Member Discount Example (PRO PLUS)
 
 ```
 Booking Price:    ₹1,500

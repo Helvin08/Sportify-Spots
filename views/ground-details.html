@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Ground Details - Sport Spot</title>
+  <title>Ground Details | Sportify Spots</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="/Image/logo%20.png">
+   <link rel="icon" type="image/png" href="/Image/logo.png">
   <link href="/css/index.css" rel="stylesheet">
+  <link href="/css/chatbot.css" rel="stylesheet">
   <link href="/css/grounds.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body class="ground-details-page">
 
 <header>
- <div class="logo-container">
+    <div class="logo-container">
         <img src="/Image/logo.png" alt="Logo" class="logo-img">
-        <div class="btn-shine">Sports Spots</div>
+        <div class="btn-shine">Sportify Spots</div>
     </div>
-    <nav>
+    <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+    <nav id="nav-menu">
         <a id="homeLink" href="index.html">Home</a>
         <button class="button1" onclick="window.location.href='membership.html'">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24">
@@ -31,8 +39,8 @@
 
 <div class="details-hero">
   <a href="grounds.html" class="back-link">← Back to Grounds</a>
-  <h1>Elite Turf Arena</h1>
-  <p>Professional Football Turf in Chennai</p>
+  <h1 id="groundNameDisplay">Ground Name</h1>
+  <p id="groundLocationDisplay">Premium Sports Venue</p>
 </div>
 
 <div class="container">
@@ -41,10 +49,8 @@
     <div class="col-md-8">
       <!-- Image Slider -->
       <div class="slider-container">
-        <div class="slider">
-          <img src="/Image/Football.png" alt="Elite Turf Arena 1">
-          <img src="/Image/football turf.png" alt="Elite Turf Arena 2">
-          <img src="/Image/turf.png" alt="Elite Turf Arena 3">
+        <div class="slider" id="imageSlider">
+          <!-- Images will be injected here -->
         </div>
         <button class="slider-btn prev">❮</button>
         <button class="slider-btn next">❯</button>
@@ -53,11 +59,11 @@
       <!-- Ground Overview -->
       <div class="detail-section">
         <h3>Ground Overview</h3>
-        <p>Elite Turf Arena is a premium football ground offering international-standard facilities. Located in the heart of Chennai, it's perfect for casual matches, training sessions, and tournaments.</p>
+        <p id="groundDescription">Loading description...</p>
         <div style="margin-top: 20px;">
-          <p><strong>📍 Location:</strong> T. Nagar, Chennai</p>
-          <p><strong>🏟️ Type:</strong> Football / Multi-Sport Turf</p>
-          <p><strong>📏 Size:</strong> 15,000 Sq. Ft.</p>
+          <p><strong>📍 Location:</strong> <span id="infoLocation">Loading...</span></p>
+          <p><strong>🏟️ Type:</strong> <span id="infoType">Loading...</span></p>
+          <p><strong>📏 Size:</strong> <span id="infoSize">Standard</span></p>
           <p><strong>⭐ Rating:</strong> <span class="rating">★★★★★</span> (4.8/5)</p>
         </div>
       </div>
@@ -65,30 +71,14 @@
       <!-- Amenities -->
       <div class="detail-section">
         <h3>Amenities</h3>
-        <ul class="amenity-list">
-          <li>Professional Grade Turf</li>
-          <li>Floodlights (Till 10 PM)</li>
+        <ul class="amenity-list" id="amenityList">
+          <li>Professional Grade Surface</li>
+          <li>Floodlights</li>
           <li>Changing Rooms</li>
           <li>Parking Facility</li>
           <li>Drinking Water</li>
           <li>First Aid Kit</li>
-          <li>Equipment Rental Available</li>
-          <li>Refreshment Corner</li>
         </ul>
-      </div>
-
-      <!-- Availability -->
-      <div class="detail-section">
-        <h3>Availability</h3>
-        <p><strong>Working Hours:</strong> 6:00 AM - 10:00 PM</p>
-        <p><strong>Closed on:</strong> No specific holidays</p>
-        <div style="margin-top: 15px;">
-          <h5>Time Slots Available:</h5>
-          <p>✓ Morning (6 AM - 12 PM)</p>
-          <p>✓ Afternoon (12 PM - 5 PM)</p>
-          <p>✓ Evening (5 PM - 8 PM)</p>
-          <p>✓ Night (8 PM - 10 PM)</p>
-        </div>
       </div>
 
       <!-- Pricing -->
@@ -101,51 +91,10 @@
               <th style="padding: 10px; text-align: left; border-bottom: 2px solid #1abc9c;">Price Per Hour</th>
             </tr>
           </thead>
-          <tbody>
-            <tr style="border-bottom: 1px solid #eee;">
-              <td style="padding: 10px;">Morning (6 AM - 12 PM)</td>
-              <td style="padding: 10px;">₹1000</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #eee;">
-              <td style="padding: 10px;">Afternoon (12 PM - 5 PM)</td>
-              <td style="padding: 10px;">₹1500</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #eee;">
-              <td style="padding: 10px;">Evening (5 PM - 8 PM)</td>
-              <td style="padding: 10px;">₹1800</td>
-            </tr>
-            <tr>
-              <td style="padding: 10px;">Night (8 PM - 10 PM)</td>
-              <td style="padding: 10px;">₹2000</td>
-            </tr>
+          <tbody id="pricingTableBody">
+            <!-- Pricing will be injected here -->
           </tbody>
         </table>
-      </div>
-
-      <!-- Reviews -->
-      <div class="detail-section">
-        <h3>Customer Reviews</h3>
-        
-        <div class="review-card">
-          <div class="rating">★★★★★</div>
-          <h5>Excellent Ground Quality</h5>
-          <p style="color: #999; font-size: 13px; margin: 5px 0;">Reviewed by Rajesh Kumar</p>
-          <p>The turf quality is outstanding and the staff is very helpful. Highly recommend for serious players!</p>
-        </div>
-
-        <div class="review-card">
-          <div class="rating">★★★★☆</div>
-          <h5>Great Facilities</h5>
-          <p style="color: #999; font-size: 13px; margin: 5px 0;">Reviewed by Priya Sharma</p>
-          <p>Good location, nice amenities, and affordable pricing. Had a wonderful experience booking here.</p>
-        </div>
-
-        <div class="review-card">
-          <div class="rating">★★★★★</div>
-          <h5>Perfect for Weekend Games</h5>
-          <p style="color: #999; font-size: 13px; margin: 5px 0;">Reviewed by Arjun Singh</p>
-          <p>Perfect ground for weekend football matches with friends. Clean facilities and great customer service.</p>
-        </div>
       </div>
     </div>
 
@@ -153,37 +102,34 @@
     <div class="col-md-4">
       <div class="booking-form">
         <h3>Book Now</h3>
-        <div class="price-tag">₹1500/hour</div>
+        <div class="price-tag" id="mainPriceTag">₹0/hour</div>
         
-        <form>
+        <form id="bookingForm">
           <div style="margin-bottom: 25px;">
             <label style="display: block; margin-bottom: 8px; font-weight: bold;">Select Date</label>
-            <input type="date" style="width: 90%; padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; background: rgba(31, 79, 70, 0.9); color: white;" required>
+            <input type="date" id="bookingDate" style="width: 90%; padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; background: rgba(31, 79, 70, 0.9); color: white;" required>
           </div>
 
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Select Time Slot</label>
-            <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
+            <select id="timeSlot" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
               <option value="">Choose a time</option>
-              <option value="morning">Morning (6 AM - 12 PM) - ₹1000</option>
-              <option value="afternoon">Afternoon (12 PM - 5 PM) - ₹1500</option>
-              <option value="evening">Evening (5 PM - 8 PM) - ₹1800</option>
-              <option value="night">Night (8 PM - 10 PM) - ₹2000</option>
+              <!-- Options will be injected here -->
             </select>
           </div>
 
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Duration (hours)</label>
-            <input type="number" value="1" min="1" style="width: 90%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
+            <input type="number" id="duration" value="1" min="1" style="width: 90%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
           </div>
 
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Number of Players</label>
-            <input type="number" value="11" min="1" style="width: 90%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
+            <input type="number" id="players" value="11" min="1" style="width: 90%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
           </div>
 
           <div class="total-price-box">
-            <strong>Total Price: ₹1500</strong>
+            <strong id="totalPriceDisplay">Total Price: ₹0</strong>
           </div>
 
           <button type="submit" class="btn-book-now">Proceed to Booking</button>
@@ -191,16 +137,15 @@
 
         <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
           <h5>Contact</h5>
-          <p>
+          <p id="groundContact">
             <strong>Phone:</strong> +91-9876543210<br>
-            <strong>Email:</strong> info@eliteturfarena.com
+            <strong>Email:</strong> support@sportifyspots.com
           </p>
         </div>
-
         <div style="margin-top: 20px;">
           <h5>Location Map</h5>
-          <div style="width: 100%; height: 200px; background: #f5f7fa; border-radius: 5px; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd;">
-            <p style="color: #999;">Map will be displayed here</p>
+          <div id="mapContainer" style="width: 100%; height: 200px; border-radius: 5px; overflow: hidden; border: 1px solid #ddd;">
+            <!-- Map iframe will be injected here -->
           </div>
         </div>
       </div>
@@ -222,32 +167,229 @@
             <a href="#">Instagram</a>
         </div>
     </div>
-    <p>© 2026 Sports Spots | Made by Helvsite</p>
+    <p>© 2026 Sportify Spots | Made by Helvsite</p>
 </footer>
 
+<script src="/js/supabase-config.js"></script>
+<script src="/js/auth-check.js"></script>
+<script src="/js/chatbot.js"></script>
 <script>
   (function(){
-    // Set home link
-    var homeLink = document.getElementById('homeLink');
-    if(homeLink) homeLink.href = 'index.html';
+    // Ground Data
+    const groundData = {
+      'elite-turf': {
+        name: 'Elite Turf Arena',
+        location: 'Chennai',
+        type: 'Football / Multi-Sport',
+        price: 1500,
+        images: ['/Image/Football.png', '/Image/football turf.png', '/Image/turf.png'],
+        description: 'Elite Turf Arena is a premium sports venue located in Chennai. It offers top-notch facilities for football and other sports, providing an excellent playing experience.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.632427845347!2d80.2423!3d13.06!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a526685f096277b%3A0x600b8c6a66a15291!2sChennai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Morning (6 AM - 12 PM)', price: 1000 },
+          { time: 'Afternoon (12 PM - 5 PM)', price: 1500 },
+          { time: 'Evening (5 PM - 8 PM)', price: 1800 },
+          { time: 'Night (8 PM - 10 PM)', price: 2000 }
+        ]
+      },
+      'green-field': {
+        name: 'Green Field Cricket',
+        location: 'Mumbai',
+        type: 'Cricket Ground',
+        price: 2000,
+        images: ['/Image/cricket.png', '/Image/turf.png'],
+        description: 'Green Field Cricket offers a lush green outfield and professional pitch for the best cricket experience in Mumbai.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.8038!2d72.84!3d19.07!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c6306644edc1%3A0x5da4ed8f8d648c69!2sMumbai%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Full Day (8 AM - 5 PM)', price: 15000 },
+          { time: 'Morning Slot (7 AM - 11 AM)', price: 5000 },
+          { time: 'Evening Slot (4 PM - 8 PM)', price: 6000 }
+        ]
+      },
+      'ace-court': {
+        name: 'Ace Court',
+        location: 'Delhi',
+        type: 'Badminton Court',
+        price: 800,
+        images: ['/Image/badminton.png', '/Image/Badminton.png'],
+        description: 'Professional indoor badminton courts with non-marking flooring and excellent lighting.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.12!2d77.21!3d28.61!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x37205b718789644!2sDelhi!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Peak Hours (6 PM - 10 PM)', price: 1000 },
+          { time: 'Off-Peak (6 AM - 5 PM)', price: 600 }
+        ]
+      },
+      'pro-turf': {
+        name: 'Pro Turf Zone',
+        location: 'Bangalore',
+        type: 'Multi-Sport Turf',
+        price: 1800,
+        images: ['/Image/turf.png', '/Image/football turf.png'],
+        description: 'Bangalore\'s favorite multi-sport destination for football, box cricket and more.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.9!2d77.59!3d12.97!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e07%3A0xf8dfad363543163e!2sBengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Morning', price: 1200 },
+          { time: 'Afternoon', price: 1500 },
+          { time: 'Evening', price: 1800 },
+          { time: 'Night', price: 2200 }
+        ]
+      },
+      'hoops-arena': {
+        name: 'Hoops Arena',
+        location: 'Pune',
+        type: 'Basketball Court',
+        price: 1200,
+        images: ['/Image/Basketball.png'],
+        description: 'Professional grade basketball court with high-quality hoops and court surface.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.3!2d73.85!3d18.52!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2c0601d440225%3A0x16ed10c0a07d0f32!2sPune%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Anytime', price: 1200 }
+        ]
+      },
+      'net-masters': {
+        name: 'Net Masters',
+        location: 'Hyderabad',
+        type: 'Tennis Court',
+        price: 1000,
+        images: ['/Image/Tennis.png'],
+        description: 'Well-maintained clay courts for tennis enthusiasts in the heart of Hyderabad.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.7!2d78.48!3d17.38!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb99daeaebd2c7%3A0xae93b78362495a6d!2sHyderabad%2C%20Telangana!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Morning', price: 800 },
+          { time: 'Evening', price: 1200 }
+        ]
+      },
+      'victory-turf': {
+        name: 'Victory Turf',
+        location: 'Kochi',
+        type: 'Football',
+        price: 1400,
+        images: ['/Image/football turf.png'],
+        description: 'High-quality synthetic turf designed for professional-grade football matches.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.8!2d76.27!3d9.98!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d514abec6bf%3A0xbd582ca055d0241!2sKochi%2C%20Kerala!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Standard', price: 1400 }
+        ]
+      },
+      'smash-point': {
+        name: 'Smash Point',
+        location: 'Ahmedabad',
+        type: 'Badminton',
+        price: 700,
+        images: ['/Image/badminton.png'],
+        description: 'Affordable and professional badminton facility with multiple courts.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.9!2d72.57!3d23.02!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e848aba5bd449%3A0x4fccddf674f540f8!2sAhmedabad%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Hourly', price: 700 }
+        ]
+      },
+      'boundary-hitters': {
+        name: 'Boundary Hitters',
+        location: 'Kolkata',
+        type: 'Cricket',
+        price: 1900,
+        images: ['/Image/cricket.png'],
+        description: 'Excellent pitch and large boundaries for a true cricket match feel.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3684.2!2d88.36!3d22.57!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a0277144110b183%3A0x3565af4459f1396a!2sKolkata%2C%20West%20Bengal!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Slot 1', price: 1900 }
+        ]
+      },
+      'urban-court': {
+        name: 'Urban Court',
+        location: 'Jaipur',
+        type: 'Basketball',
+        price: 1100,
+        images: ['/Image/Basketball.png'],
+        description: 'Central Jaipur basketball court with modern amenities.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3557.5!2d75.78!3d26.91!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db41215a46703%3A0x5e30c1dcaed127ad!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Hourly', price: 1100 }
+        ]
+      },
+      'grand-slam': {
+        name: 'Grand Slam Arena',
+        location: 'Chandigarh',
+        type: 'Tennis',
+        price: 1300,
+        images: ['/Image/Tennis.png'],
+        description: 'Premium tennis facility with coaching available.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3430.2!2d76.77!3d30.73!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390fed0be66ec483%3A0x15c9012e1d7c77fa!2sChandigarh!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Standard', price: 1300 }
+        ]
+      },
+      'dynamic-turf': {
+        name: 'Dynamic Turf',
+        location: 'Indore',
+        type: 'Multi-Sport',
+        price: 1700,
+        images: ['/Image/turf.png'],
+        description: 'Dynamic sports environment for various field games.',
+        mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680.1!2d75.86!3d22.71!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fd23fd489f67%3A0x280e8e6005517173!2sIndore%2C%20Madhya%20Pradesh!5e0!3m2!1sen!2sin!4v1707400000000!5m2!1sen!2sin',
+        slots: [
+          { time: 'Standard', price: 1700 }
+        ]
+      }
+    };
 
-    // Show profile link if logged in
-    var profileLink = document.getElementById('profileLink');
-    if(profileLink) profileLink.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'inline-block' : 'none';
+    // Get ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const groundId = urlParams.get('id') || 'elite-turf';
+    const ground = groundData[groundId] || groundData['elite-turf'];
 
-    // Hide login button if logged in
-    var loginBtn = document.getElementById('loginBtn');
-    if(loginBtn) loginBtn.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'none' : 'inline-block';
+    // Update Page Content
+    document.title = `${ground.name} | Sportify Spots`;
+    document.getElementById('groundNameDisplay').textContent = ground.name;
+    document.getElementById('groundLocationDisplay').textContent = `Premium Sports Venue in ${ground.location}`;
+    document.getElementById('groundDescription').textContent = ground.description;
+    document.getElementById('infoLocation').textContent = ground.location;
+    document.getElementById('infoType').textContent = ground.type;
+    document.getElementById('mainPriceTag').textContent = `₹${ground.price}/hour`;
+
+    // Inject Map
+    const mapContainer = document.getElementById('mapContainer');
+    mapContainer.innerHTML = `<iframe 
+      src="${ground.mapUrl}" 
+      width="100%" 
+      height="200" 
+      style="border:0;" 
+      allowfullscreen="" 
+      loading="lazy" 
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>`;
+
+    // Inject Images
+    const slider = document.getElementById('imageSlider');
+    ground.images.forEach(imgSrc => {
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.alt = ground.name;
+      slider.appendChild(img);
+    });
+
+    // Inject Pricing & Slots
+    const pricingTable = document.getElementById('pricingTableBody');
+    const slotSelect = document.getElementById('timeSlot');
+    ground.slots.forEach(slot => {
+      // Table
+      const row = `<tr><td style="padding: 10px;">${slot.time}</td><td style="padding: 10px;">₹${slot.price}</td></tr>`;
+      pricingTable.innerHTML += row;
+      // Select
+      const option = document.createElement('option');
+      option.value = slot.price;
+      option.textContent = `${slot.time} - ₹${slot.price}`;
+      slotSelect.appendChild(option);
+    });
 
     // Slider Logic
     let currentSlide = 0;
-    const slider = document.querySelector('.slider');
     const slides = document.querySelectorAll('.slider img');
     const nextBtn = document.querySelector('.slider-btn.next');
     const prevBtn = document.querySelector('.slider-btn.prev');
 
     function showSlide(index) {
-      if (!slider || slides.length === 0) return;
+      if (slides.length === 0) return;
       if (index >= slides.length) currentSlide = 0;
       else if (index < 0) currentSlide = slides.length - 1;
       else currentSlide = index;
@@ -256,9 +398,106 @@
 
     if (nextBtn) nextBtn.onclick = () => showSlide(currentSlide + 1);
     if (prevBtn) prevBtn.onclick = () => showSlide(currentSlide - 1);
-
-    // Auto slide every 5 seconds
     setInterval(() => showSlide(currentSlide + 1), 5000);
+
+    // Booking Logic
+    const durationInput = document.getElementById('duration');
+    const totalPriceDisplay = document.getElementById('totalPriceDisplay');
+
+    function updateTotalPrice() {
+      const pricePerHour = parseInt(slotSelect.value) || 0;
+      const duration = parseInt(durationInput.value) || 0;
+      const total = pricePerHour * duration;
+      totalPriceDisplay.textContent = `Total Price: ₹${total}`;
+    }
+
+    slotSelect.onchange = updateTotalPrice;
+    durationInput.oninput = updateTotalPrice;
+
+    document.getElementById('bookingForm').onsubmit = function(e) {
+      e.preventDefault();
+      
+      if (localStorage.getItem('loggedIn') !== 'true') {
+        showToast('Please login to book a ground.', 'warning');
+        setTimeout(() => window.location.href = 'login.html', 1500);
+        return;
+      }
+
+      const amountText = totalPriceDisplay.textContent.split('₹')[1];
+      const amount = parseInt(amountText);
+      const date = document.getElementById('bookingDate').value;
+      const timeText = slotSelect.options[slotSelect.selectedIndex].text;
+      const duration = durationInput.value;
+      const players = document.getElementById('players').value;
+
+      if (!amount || amount <= 0) {
+        showToast('Please select a valid time slot and duration.', 'warning');
+        return;
+      }
+
+      // Create Razorpay Order
+      fetch('/api/bookings/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: amount })
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (!data.success) throw new Error(data.message || 'Failed to create order');
+
+          const options = {
+            "key": data.key_id,
+            "amount": data.amount,
+            "currency": "INR",
+            "name": "Sportify Spots",
+            "description": `Booking for ${ground.name} - ${date}`,
+            "order_id": data.order_id,
+            "handler": function (rzpResponse){
+              fetch('/api/bookings/verify-payment', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                      razorpay_order_id: rzpResponse.razorpay_order_id,
+                      razorpay_payment_id: rzpResponse.razorpay_payment_id,
+                      razorpay_signature: rzpResponse.razorpay_signature
+                  })
+              })
+              .then(res => res.json())
+              .then(verifyData => {
+                  if (verifyData.success) {
+                      const bookingData = {
+                        groundName: ground.name,
+                        date: date,
+                        timeSlot: timeText,
+                        duration: duration,
+                        players: players,
+                        paymentMode: 'Razorpay',
+                        totalPrice: amount,
+                        razorpay_payment_id: rzpResponse.razorpay_payment_id
+                      };
+                      const existingBookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
+                      existingBookings.push(bookingData);
+                      localStorage.setItem('userBookings', JSON.stringify(existingBookings));
+                      showToast('Payment Successful! Slot reserved at ' + ground.name, 'success');
+                      setTimeout(() => window.location.href = 'my-bookings.html', 2000);
+                  } else {
+                      showToast('Payment verification failed.', 'error');
+                  }
+              });
+            },
+            "prefill": {
+              "name": localStorage.getItem('userName') || "",
+              "email": localStorage.getItem('userEmail') || ""
+            },
+            "theme": { "color": "#1abc9c" }
+          };
+          const rzp1 = new Razorpay(options);
+          rzp1.open();
+      })
+      .catch(error => {
+          showToast('Error: ' + error.message, 'error');
+      });
+    };
   })();
 </script>
 

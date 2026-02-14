@@ -1,9 +1,119 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin Dashboard - Sport Spot Booking</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Sportify Spots</title>
+   <link rel="icon" type="image/png" href="/Image/logo.png">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/css/index.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #1F4F46 0%, #2a6b5f 50%, #358778 100%);
+      min-height: 100vh;
+      color: white;
+    }
+
+    .glass-card {
+      background: #F3EFE4;
+      border-radius: 20px;
+      border: 3px solid #1F4F46;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+      color: #1F4F46;
+      transition: all 0.3s ease;
+      height: 100%;
+      width: 100%;
+      min-height: 300px;
+      padding: 20px;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      border-color: #FACC15;
+    }
+
+    .card-title {
+      font-size: 2rem !important;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: #1F4F46 !important;
+    }
+
+    .card-text {
+      font-size: 1.3rem;
+      color: #2a6b5f !important;
+      font-weight: 500;
+    }
+
+    .card-header {
+      background: #1F4F46 !important;
+      border-bottom: 2px solid #FACC15;
+      color: #FACC15 !important;
+      font-weight: 900;
+      font-size: 1.6rem;
+      border-radius: 17px 17px 0 0 !important;
+      padding: 15px;
+    }
+
+    .list-group-item {
+      background: transparent;
+      border-color: rgba(31, 79, 70, 0.2);
+      color: #1F4F46;
+      padding: 20px;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .list-group-item:hover {
+      background: rgba(31, 79, 70, 0.05);
+      color: #1F4F46;
+    }
+
+    h1 {
+      font-size: 4rem !important;
+      color: #FACC15;
+      font-weight: 900;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    h5 {
+      color: #1F4F46;
+      font-weight: 800;
+    }
+
+    .btn-glass {
+      background: #1F4F46;
+      color: #FACC15;
+      border: 2px solid #FACC15;
+      border-radius: 15px;
+      padding: 15px 30px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-glass:hover {
+      background: #FACC15;
+      color: #1F4F46;
+      box-shadow: 0 5px 20px rgba(250, 204, 21, 0.4);
+    }
+
+    .stat-val {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #1F4F46;
+      margin-bottom: 0;
+    }
+
+    .stat-label {
+      font-size: 1.1rem;
+      color: #2a6b5f;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+  </style>
   <script>
     if (localStorage.getItem('loggedIn') !== 'true' || localStorage.getItem('isAdmin') !== 'true') {
       window.location.href = 'login.html';
@@ -12,68 +122,114 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand">Sport Spot Admin</a>
-    <a class="btn btn-outline-light" href="index.html">Back to Site</a>
-  </div>
-</nav>
+<header>
+    <div class="logo-container">
+        <img src="/Image/logo.png" alt="Logo" class="logo-img">
+        <div class="btn-shine">Sportify Spots</div>
+    </div>
+    <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+    <nav id="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="manage-grounds.html">Grounds</a>
+        <a href="view-bookings.html">Bookings</a>
+        <a href="manage-users.html">Users</a>
+        <a href="index.html" class="button">Back to Site</a>
+    </nav>
+</header>
 
 <div class="container mt-5">
-  <h1 class="mb-4">Admin Dashboard</h1>
+  <h1 class="mb-5">Admin Dashboard</h1>
 
-  <div class="row">
+  <div class="row g-4">
     <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
+      <div class="card glass-card">
+        <div class="card-body d-flex flex-column">
           <h5 class="card-title">Manage Grounds</h5>
-          <p class="card-text">Add, edit, or remove sports grounds.</p>
-          <a href="manage-grounds.html" class="btn btn-primary">Manage</a>
+          <p class="card-text text-white-50">Add, edit, or remove sports grounds from the platform.</p>
+          <div class="mt-auto">
+            <a href="manage-grounds.html" class="btn btn-glass w-100">Manage</a>
+          </div>
         </div>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
+      <div class="card glass-card">
+        <div class="card-body d-flex flex-column">
           <h5 class="card-title">View Bookings</h5>
-          <p class="card-text">See all current and upcoming bookings.</p>
-          <a href="view-bookings.html" class="btn btn-primary">View</a>
+          <p class="card-text text-white-50">See all current and upcoming bookings across all grounds.</p>
+          <div class="mt-auto">
+            <a href="view-bookings.html" class="btn btn-glass w-100">View</a>
+          </div>
         </div>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
+      <div class="card glass-card">
+        <div class="card-body d-flex flex-column">
           <h5 class="card-title">User Management</h5>
-          <p class="card-text">Manage user accounts and permissions.</p>
-          <a href="manage-users.html" class="btn btn-primary">Manage</a>
+          <p class="card-text text-white-50">Manage user accounts, permissions, and platform access.</p>
+          <div class="mt-auto">
+            <a href="manage-users.html" class="btn btn-glass w-100">Manage</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row mt-4">
-    <div class="col-md-6">
-      <div class="card">
+  <div class="row mt-5 g-4 mb-5">
+    <div class="col-md-7">
+      <div class="card glass-card">
         <div class="card-header">
-          Recent Bookings
+          Recent Activity
         </div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">Cricket ground - Chennai - Feb 5, 2026</li>
-          <li class="list-group-item">Football turf - Mumbai - Feb 7, 2026</li>
-          <li class="list-group-item">Badminton court - Delhi - Feb 10, 2026</li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>Elite Turf Arena - Chennai</span>
+            <span class="badge bg-success rounded-pill">Feb 5</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>Kochi Sports Hub - Kochi</span>
+            <span class="badge bg-success rounded-pill">Feb 7</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>Bangalore Smash Court - Bangalore</span>
+            <span class="badge bg-success rounded-pill">Feb 10</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>Hyderabad Pro Turf - Hyderabad</span>
+            <span class="badge bg-success rounded-pill">Feb 12</span>
+          </li>
         </ul>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="card">
+    <div class="col-md-5">
+      <div class="card glass-card">
         <div class="card-header">
-          Statistics
+          Quick Stats
         </div>
         <div class="card-body">
-          <p>Total Grounds: 25</p>
-          <p>Active Bookings: 12</p>
-          <p>Registered Users: 150</p>
+          <div class="row text-center">
+            <div class="col-6 mb-4">
+              <p class="stat-val">25</p>
+              <p class="stat-label">Grounds</p>
+            </div>
+            <div class="col-6 mb-4">
+              <p class="stat-val">12</p>
+              <p class="stat-label">Bookings</p>
+            </div>
+            <div class="col-6">
+              <p class="stat-val">150</p>
+              <p class="stat-label">Users</p>
+            </div>
+            <div class="col-6">
+              <p class="stat-val">₹45k</p>
+              <p class="stat-label">Revenue</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -81,5 +237,16 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Mobile Menu Toggle
+    var mobileMenu = document.getElementById('mobile-menu');
+    var navMenu = document.getElementById('nav-menu');
+    if(mobileMenu && navMenu) {
+        mobileMenu.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
+</script>
 </body>
 </html>

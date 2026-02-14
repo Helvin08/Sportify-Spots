@@ -1,7 +1,7 @@
 #!/bin/bash
-# Setup script for Sports Spots Membership System
+# Setup script for Sportify Spots Membership System
 
-echo "🚀 Sports Spots Membership System - Setup Guide"
+echo "🚀 Sportify Spots Membership System - Setup Guide"
 echo "================================================"
 echo ""
 

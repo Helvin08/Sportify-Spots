@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings | Sportify Spots</title>
+    <link rel="icon" type="image/png" href="/Image/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/index.css" rel="stylesheet">
+    <link href="/css/auth.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1F4F46 0%, #2a6b5f 50%, #358778 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .bookings-container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .booking-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .booking-card.removing {
+            transform: translateX(100px) scale(0.8);
+            opacity: 0;
+            filter: blur(10px);
+        }
+
+        .booking-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .ground-name {
+            color: #FACC15;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .status-confirmed { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .status-cancelled { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .action-area {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .btn-cancel {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid #f87171;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover:not(:disabled) {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-cancel:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            color: #FACC15;
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="/Image/logo.png" alt="Logo" class="logo-img">
+        <div class="btn-shine">Sportify Spots</div>
+    </div>
+    <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+    <nav id="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="grounds.html">Grounds</a>
+        <a href="profile.html">Profile</a>
+        <a href="profile.html" class="button">Back to Profile</a>
+    </nav>
+</header>
+
+<div class="bookings-container">
+    <h1>My Ground Bookings</h1>
+    <div id="bookingsList">
+        <!-- Bookings will be injected here -->
+    </div>
+</div>
+
+<script src="/js/supabase-config.js"></script>
+<script src="/js/auth-check.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (localStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        renderBookings();
+    });
+
+    function renderBookings() {
+        const bookingsList = document.getElementById('bookingsList');
+        const userBookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
+
+        if (userBookings.length === 0) {
+            bookingsList.innerHTML = `
+                <div class="empty-state">
+                    <h3>No bookings found</h3>
+                    <p>You haven't booked any grounds yet. Ready to play?</p>
+                    <a href="grounds.html" class="button" style="display: inline-block; margin-top: 15px; text-decoration: none;">Browse Grounds</a>
+                </div>
+            `;
+            return;
+        }
+
+        bookingsList.innerHTML = userBookings.map((b, index) => `
+            <div class="booking-card">
+                <div class="booking-header">
+                    <h2 class="ground-name">${b.groundName}</h2>
+                    <span class="status-badge ${b.status === 'Cancelled' ? 'status-cancelled' : 'status-confirmed'}">
+                        ${b.status || 'Confirmed'}
+                    </span>
+                </div>
+                <div class="booking-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Date</span>
+                        <span class="detail-value">${b.date}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Time Slot</span>
+                        <span class="detail-value">${b.timeSlot}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Duration</span>
+                        <span class="detail-value">${b.duration} Hour(s)</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Amount Paid</span>
+                        <span class="detail-value">₹${b.totalPrice}</span>
+                    </div>
+                </div>
+                <div class="action-area">
+                    ${b.status !== 'Cancelled' ? `
+                        <button class="btn-cancel" onclick="cancelBooking(${index})">Cancel Booking</button>
+                    ` : `
+                        <span style="color: #f87171; font-size: 0.9rem; font-style: italic;">Booking cancelled (No Refund Policy)</span>
+                    `}
+                </div>
+            </div>
+        `).reverse().join('');
+    }
+
+    function cancelBooking(index) {
+        // Since we are reversing the array for display, we need to map the index back
+        const userBookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
+        const actualIndex = userBookings.length - 1 - index;
+
+        if (confirm('Are you sure you want to cancel this booking? This will remove it from your list. Please note: No refund will be provided.')) {
+            const cards = document.querySelectorAll('.booking-card');
+            const cardToRemove = cards[index];
+            
+            if (cardToRemove) {
+                cardToRemove.classList.add('removing');
+                
+                setTimeout(() => {
+                    userBookings.splice(actualIndex, 1);
+                    localStorage.setItem('userBookings', JSON.stringify(userBookings));
+                    
+                    if (typeof showToast === 'function') {
+                        showToast('Booking cancelled and removed!', 'success');
+                    }
+                    
+                    renderBookings();
+                }, 500);
+            }
+        }
+    }
+
+    // Mobile Menu Toggle
+    var mobileMenu = document.getElementById('mobile-menu');
+    var navMenu = document.getElementById('nav-menu');
+    if(mobileMenu && navMenu) {
+        mobileMenu.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
+</script>
+
+</body>
+</html>

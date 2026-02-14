@@ -1,242 +1,370 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Manage Users - Admin Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/css/index.css" rel="stylesheet">
-  <script>
-    if (localStorage.getItem('loggedIn') !== 'true' || localStorage.getItem('isAdmin') !== 'true') {
-      window.location.href = 'login.html';
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users | Sportify Spots</title>
+    <link rel="icon" type="image/png" href="/Image/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/index.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1F4F46 0%, #2a6b5f 50%, #358778 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        header {
+            background: rgba(15, 38, 34, 0.9) !important;
+            border-bottom: 2px solid #FACC15;
+        }
+
+        h1 {
+            font-size: 3.5rem !important;
+            color: #FACC15;
+            font-weight: 900;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .table-container {
+            background: #F3EFE4;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+            margin-bottom: 50px;
+            border: 3px solid #FACC15;
+            margin-top: 20px;
+        }
+
+        .table {
+            color: #1F4F46;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .table thead {
+            background-color: #1F4F46 !important;
+            color: #FACC15 !important;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: rgba(31, 79, 70, 0.05);
+        }
+
+        .btn-add {
+            background: #FACC15;
+            color: #1F4F46;
+            border: 2px solid #1F4F46;
+            border-radius: 12px;
+            padding: 12px 25px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-add:hover {
+            background: #e5b813;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(250, 204, 21, 0.4);
+        }
+
+        .search-container {
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .form-control {
+            border: 2px solid #FACC15;
+            border-radius: 12px;
+            padding: 12px;
+            background: #F3EFE4;
+            color: #1F4F46;
+            font-weight: 600;
+        }
+
+        .form-control::placeholder {
+            color: #2a6b5f;
+        }
+
+        .modal-content {
+            background: #F3EFE4;
+            color: #1F4F46;
+            border-radius: 20px;
+            border: 3px solid #1F4F46;
+        }
+
+        .modal-header {
+            background: #1F4F46;
+            color: #FACC15;
+            border-bottom: 2px solid #FACC15;
+        }
+
+        .badge {
+            font-size: 0.9rem;
+            padding: 8px 12px;
+        }
+    </style>
+    <script>
+        if (localStorage.getItem('loggedIn') !== 'true' || localStorage.getItem('isAdmin') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand">Manage Users</a>
-    <a class="btn btn-outline-light" href="admin.html">Back to Dashboard</a>
-  </div>
-</nav>
+<header>
+    <div class="logo-container">
+        <img src="/Image/logo.png" alt="Logo" class="logo-img">
+        <div class="btn-shine">Sportify Spots</div>
+    </div>
+    <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+    <nav id="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="manage-grounds.html">Grounds</a>
+        <a href="view-bookings.html">Bookings</a>
+        <a href="manage-users.html" class="active">Users</a>
+        <a href="admin.html" class="button">Back to Dashboard</a>
+    </nav>
+</header>
 
 <div class="container mt-5">
-  <h1 class="mb-4">User Management</h1>
+    <h1>User Management</h1>
 
-  <button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Add New User</button>
-
-  <div class="row mb-3">
-    <div class="col-md-4">
-      <input type="text" class="form-control" placeholder="Search users..." id="searchInput">
+    <div class="d-flex justify-content-center flex-column align-items-center">
+        <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">+ Add New User</button>
+        <div class="search-container w-100">
+            <input type="text" class="form-control" placeholder="Search users by name, email or phone..." id="searchInput">
+        </div>
     </div>
-  </div>
 
-  <table class="table table-striped table-hover">
-    <thead class="table-dark">
-      <tr>
-        <th>User ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Join Date</th>
-        <th>Bookings</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>#USR001</td>
-        <td>John Doe</td>
-        <td>john@example.com</td>
-        <td>+91 9876543210</td>
-        <td>Jan 15, 2026</td>
-        <td>5</td>
-        <td><span class="badge bg-success">Active</span></td>
-        <td>
-          <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
-          <button class="btn btn-sm btn-danger" onclick="toggleUserStatus(this)">Deactivate</button>
-        </td>
-      </tr>
-      <tr>
-        <td>#USR002</td>
-        <td>Jane Smith</td>
-        <td>jane@example.com</td>
-        <td>+91 9876543211</td>
-        <td>Jan 20, 2026</td>
-        <td>3</td>
-        <td><span class="badge bg-success">Active</span></td>
-        <td>
-          <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
-          <button class="btn btn-sm btn-danger" onclick="toggleUserStatus(this)">Deactivate</button>
-        </td>
-      </tr>
-      <tr>
-        <td>#USR003</td>
-        <td>Rajesh Kumar</td>
-        <td>rajesh@example.com</td>
-        <td>+91 9876543212</td>
-        <td>Jan 25, 2026</td>
-        <td>8</td>
-        <td><span class="badge bg-success">Active</span></td>
-        <td>
-          <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
-          <button class="btn btn-sm btn-danger" onclick="toggleUserStatus(this)">Deactivate</button>
-        </td>
-      </tr>
-      <tr>
-        <td>#USR004</td>
-        <td>Priya Sharma</td>
-        <td>priya@example.com</td>
-        <td>+91 9876543213</td>
-        <td>Jan 10, 2026</td>
-        <td>2</td>
-        <td><span class="badge bg-danger">Inactive</span></td>
-        <td>
-          <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
-          <button class="btn btn-sm btn-success" onclick="toggleUserStatus(this)">Activate</button>
-        </td>
-      </tr>
-      <tr>
-        <td>#USR005</td>
-        <td>Arjun Nair</td>
-        <td>arjun@example.com</td>
-        <td>+91 9876543214</td>
-        <td>Feb 1, 2026</td>
-        <td>1</td>
-        <td><span class="badge bg-success">Active</span></td>
-        <td>
-          <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
-          <button class="btn btn-sm btn-danger" onclick="toggleUserStatus(this)">Deactivate</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <div class="table-container">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Join Date</th>
+                    <th>Bookings</th>
+                    <th>Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#USR001</td>
+                    <td>John Doe</td>
+                    <td>john@example.com</td>
+                    <td>+91 9876543210</td>
+                    <td>Jan 15, 2026</td>
+                    <td>5</td>
+                    <td><span class="badge bg-success">Active</span></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-warning fw-bold" onclick="editUser(this)">Edit</button>
+                        <button class="btn btn-sm btn-danger fw-bold" onclick="toggleUserStatus(this)">Deactivate</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#USR002</td>
+                    <td>Jane Smith</td>
+                    <td>jane@example.com</td>
+                    <td>+91 9876543211</td>
+                    <td>Jan 20, 2026</td>
+                    <td>3</td>
+                    <td><span class="badge bg-success">Active</span></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-warning fw-bold" onclick="editUser(this)">Edit</button>
+                        <button class="btn btn-sm btn-danger fw-bold" onclick="toggleUserStatus(this)">Deactivate</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#USR003</td>
+                    <td>Rajesh Kumar</td>
+                    <td>rajesh@example.com</td>
+                    <td>+91 9876543212</td>
+                    <td>Jan 25, 2026</td>
+                    <td>8</td>
+                    <td><span class="badge bg-success">Active</span></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-warning fw-bold" onclick="editUser(this)">Edit</button>
+                        <button class="btn btn-sm btn-danger fw-bold" onclick="toggleUserStatus(this)">Deactivate</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#USR004</td>
+                    <td>Priya Sharma</td>
+                    <td>priya@example.com</td>
+                    <td>+91 9876543213</td>
+                    <td>Jan 10, 2026</td>
+                    <td>2</td>
+                    <td><span class="badge bg-danger">Inactive</span></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-warning fw-bold" onclick="editUser(this)">Edit</button>
+                        <button class="btn btn-sm btn-success fw-bold" onclick="toggleUserStatus(this)">Activate</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#USR005</td>
+                    <td>Arjun Nair</td>
+                    <td>arjun@example.com</td>
+                    <td>+91 9876543214</td>
+                    <td>Feb 1, 2026</td>
+                    <td>1</td>
+                    <td><span class="badge bg-success">Active</span></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-warning fw-bold" onclick="editUser(this)">Edit</button>
+                        <button class="btn btn-sm btn-danger fw-bold" onclick="toggleUserStatus(this)">Deactivate</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Add User Modal -->
 <div class="modal fade" id="addUserModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Add New User</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="addUserForm">
-          <div class="mb-3">
-            <label class="form-label">Full Name</label>
-            <input type="text" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Phone</label>
-            <input type="tel" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Status</label>
-            <select class="form-control" required>
-              <option>Active</option>
-              <option>Inactive</option>
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="addNewUser()">Add User</button>
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" required>
+                            <option>Active</option>
+                            <option>Inactive</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary fw-bold" onclick="addNewUser()">Add User</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Search functionality
-  document.getElementById('searchInput').addEventListener('keyup', function() {
-    const searchTerm = this.value.toLowerCase().trim();
-    const tableRows = document.querySelectorAll('tbody tr');
+    // Mobile Menu Toggle
+    var mobileMenu = document.getElementById('mobile-menu');
+    var navMenu = document.getElementById('nav-menu');
+    if(mobileMenu && navMenu) {
+        mobileMenu.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
 
-    tableRows.forEach(row => {
-      const rowText = row.textContent.toLowerCase();
-      if (searchTerm === '' || rowText.includes(searchTerm)) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        const tableRows = document.querySelectorAll('tbody tr');
+
+        tableRows.forEach(row => {
+            const rowText = row.textContent.toLowerCase();
+            if (searchTerm === '' || rowText.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
     });
-  });
 
-  function addNewUser() {
-    const form = document.getElementById('addUserForm');
-    const name = form.querySelector('input[type="text"]').value.trim();
-    const email = form.querySelector('input[type="email"]').value.trim();
-    const phone = form.querySelector('input[type="tel"]').value.trim();
-    const password = form.querySelector('input[type="password"]').value.trim();
-    const status = form.querySelector('select').value;
+    function addNewUser() {
+        const form = document.getElementById('addUserForm');
+        const name = form.querySelector('input[type="text"]').value.trim();
+        const email = form.querySelector('input[type="email"]').value.trim();
+        const phone = form.querySelector('input[type="tel"]').value.trim();
+        const password = form.querySelector('input[type="password"]').value.trim();
+        const status = form.querySelector('select').value;
 
-    if (!name || !email || !phone || !password) {
-      alert('Please fill in all fields');
-      return;
+        if (!name || !email || !phone || !password) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        const table = document.querySelector('tbody');
+        const newRow = document.createElement('tr');
+        const userId = '#USR' + String(table.children.length + 1).padStart(3, '0');
+        const statusBadge = status === 'Active' ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
+        
+        newRow.innerHTML = `
+            <td>${userId}</td>
+            <td>${name}</td>
+            <td>${email}</td>
+            <td>${phone}</td>
+            <td>Feb 2, 2026</td>
+            <td>0</td>
+            <td>${statusBadge}</td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-warning fw-bold" onclick="editUser(this)">Edit</button>
+                <button class="btn btn-sm fw-bold ${status === 'Active' ? 'btn-danger' : 'btn-success'}" onclick="toggleUserStatus(this)">${status === 'Active' ? 'Deactivate' : 'Activate'}</button>
+            </td>
+        `;
+        
+        table.appendChild(newRow);
+        form.reset();
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+        modal.hide();
+        alert('User added successfully!');
     }
 
-    const table = document.querySelector('tbody');
-    const newRow = document.createElement('tr');
-    const userId = '#USR' + String(table.children.length + 1).padStart(3, '0');
-    const statusBadge = status === 'Active' ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
-    
-    newRow.innerHTML = `
-      <td>${userId}</td>
-      <td>${name}</td>
-      <td>${email}</td>
-      <td>${phone}</td>
-      <td>Feb 2, 2026</td>
-      <td>0</td>
-      <td>${statusBadge}</td>
-      <td>
-        <button class="btn btn-sm btn-warning" onclick="editUser(this)">Edit</button>
-        <button class="btn btn-sm ${status === 'Active' ? 'btn-danger' : 'btn-success'}" onclick="toggleUserStatus(this)">${status === 'Active' ? 'Deactivate' : 'Activate'}</button>
-      </td>
-    `;
-    
-    table.appendChild(newRow);
-    form.reset();
-    const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
-    modal.hide();
-    alert('User added successfully!');
-  }
-
-  function editUser(btn) {
-    alert('Edit functionality coming soon!');
-  }
-
-  function toggleUserStatus(btn) {
-    const row = btn.closest('tr');
-    const statusCell = row.querySelector('td:nth-child(7)');
-    const currentStatus = statusCell.textContent.trim();
-
-    if (currentStatus === 'Active') {
-      if (confirm('Are you sure you want to deactivate this user?')) {
-        statusCell.innerHTML = '<span class="badge bg-danger">Inactive</span>';
-        btn.textContent = 'Activate';
-        btn.classList.remove('btn-danger');
-        btn.classList.add('btn-success');
-        alert('User deactivated successfully!');
-      }
-    } else {
-      if (confirm('Are you sure you want to activate this user?')) {
-        statusCell.innerHTML = '<span class="badge bg-success">Active</span>';
-        btn.textContent = 'Deactivate';
-        btn.classList.remove('btn-success');
-        btn.classList.add('btn-danger');
-        alert('User activated successfully!');
-      }
+    function editUser(btn) {
+        alert('Edit functionality coming soon!');
     }
-  }
+
+    function toggleUserStatus(btn) {
+        const row = btn.closest('tr');
+        const statusCell = row.querySelector('td:nth-child(7)');
+        const currentStatus = statusCell.textContent.trim();
+
+        if (currentStatus === 'Active') {
+            if (confirm('Are you sure you want to deactivate this user?')) {
+                statusCell.innerHTML = '<span class="badge bg-danger">Inactive</span>';
+                btn.textContent = 'Activate';
+                btn.classList.remove('btn-danger');
+                btn.classList.add('btn-success');
+                alert('User deactivated successfully!');
+            }
+        } else {
+            if (confirm('Are you sure you want to activate this user?')) {
+                statusCell.innerHTML = '<span class="badge bg-success">Active</span>';
+                btn.textContent = 'Deactivate';
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-danger');
+                alert('User activated successfully!');
+            }
+        }
+    }
 </script>
+</body>
+</html>

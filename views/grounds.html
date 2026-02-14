@@ -1,22 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sport Spot - Available Grounds</title>
-  <link rel="icon" type="image/png" href="/Image/logo%20link.png">
+  <title>Available Grounds | Sportify Spots</title>
+  <link rel="icon" type="image/png" href="/Image/logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="/css/index.css" rel="stylesheet">
    <link href="/css/auth.css" rel="stylesheet">
    <link href="/css/grounds.css" rel="stylesheet">
+   <link href="/css/chatbot.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse-soft {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
+    .no-results-container {
+        animation: fadeInUp 0.6s ease-out forwards;
+        text-align: center;
+        width: 100%;
+        padding: 60px 20px;
+        background: rgba(243, 239, 228, 0.5);
+        border-radius: 30px;
+        margin-top: 30px;
+        border: 2px dashed #1F4F46;
+    }
+    .no-results-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: block;
+    }
+    .no-results-title {
+        color: #1F4F46;
+        font-size: 3rem;
+        font-weight: 900;
+        margin-bottom: 15px;
+        animation: pulse-soft 2s infinite ease-in-out;
+    }
+    .btn-notify {
+        background: #1F4F46 !important;
+        color: #F3EFE4 !important;
+        border: 2px solid #F3EFE4 !important;
+        padding: 15px 35px !important;
+        font-size: 1.3rem !important;
+        font-weight: 800 !important;
+        border-radius: 50px !important;
+        transition: all 0.3s ease;
+    }
+    .btn-notify:hover {
+        background: #FACC15 !important;
+        color: #1F4F46 !important;
+        box-shadow: 0 10px 25px rgba(250, 204, 21, 0.4);
+        transform: translateY(-3px);
+    }
+
+    /* Custom Notification Style Removed - Now Global */
+  </style>
 </head>
 <body>
 
 <header>
     <div class="logo-container">
         <img src="/Image/logo.png" alt="Logo" class="logo-img">
-        <div class="btn-shine">Sports Spots</div>
+        <div class="btn-shine">Sportify Spots</div>
     </div>
-    <nav>
+    <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+    <nav id="nav-menu">
         <a id="homeLink" href="index.html">Home</a>
         <button class="button1" onclick="window.location.href='membership.html'">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24">
@@ -47,7 +104,7 @@
         <h5>Elite Turf Arena</h5>
         <p>📍 Chennai</p>
         <p class="price">₹1500 / hour</p>
-        <a href="ground-details.html" class="view-details-btn">View Details</a>
+        <a href="ground-details.html?id=elite-turf" class="view-details-btn">View Details</a>
       </div>
     </div>
 
@@ -55,10 +112,10 @@
       <img src="/Image/Cricket.png" alt="Cricket Ground">
       <div class="ground-card-body">
         <span class="badge">Cricket</span>
-        <h5>Green Field Cricket</h5>
-        <p>📍 Mumbai</p>
+        <h5>Kochi Sports Hub</h5>
+        <p>📍 Kochi</p>
         <p class="price">₹2000 / hour</p>
-        <a href="ground-details.html" class="view-details-btn">View Details</a>
+        <a href="ground-details.html?id=green-field" class="view-details-btn">View Details</a>
       </div>
     </div>
 
@@ -66,10 +123,10 @@
       <img src="/Image/Badminton.png" alt="Badminton Court">
       <div class="ground-card-body">
         <span class="badge">Badminton</span>
-        <h5>Ace Court</h5>
-        <p>📍 Delhi</p>
+        <h5>Bangalore Smash Court</h5>
+        <p>📍 Bangalore</p>
         <p class="price">₹800 / hour</p>
-        <a href="ground-details.html" class="view-details-btn">View Details</a>
+        <a href="ground-details.html?id=ace-court" class="view-details-btn">View Details</a>
       </div>
     </div>
 
@@ -77,10 +134,10 @@
       <img src="/Image/turf.png" alt="Multi-Sport Turf">
       <div class="ground-card-body">
         <span class="badge">Multi-Sport</span>
-        <h5>Pro Turf Zone</h5>
-        <p>📍 Bangalore</p>
+        <h5>Hyderabad Pro Turf</h5>
+        <p>📍 Hyderabad</p>
         <p class="price">₹1800 / hour</p>
-        <a href="ground-details.html" class="view-details-btn">View Details</a>
+        <a href="ground-details.html?id=pro-turf" class="view-details-btn">View Details</a>
       </div>
     </div>
 
@@ -88,10 +145,10 @@
       <img src="/Image/Basketball.png" alt="Basketball Court">
       <div class="ground-card-body">
         <span class="badge">Basketball</span>
-        <h5>Hoops Arena</h5>
-        <p>📍 Pune</p>
+        <h5>Madurai Hoops</h5>
+        <p>📍 Madurai</p>
         <p class="price">₹1200 / hour</p>
-        <a href="ground-details.html" class="view-details-btn">View Details</a>
+        <a href="ground-details.html?id=hoops-arena" class="view-details-btn">View Details</a>
       </div>
     </div>
 
@@ -99,11 +156,83 @@
       <img src="/Image/Tennis.png" alt="Tennis Court">
       <div class="ground-card-body">
         <span class="badge">Tennis</span>
-        <h5>Net Masters</h5>
-        <p>📍 Hyderabad</p>
+        <h5>Coimbatore Net Masters</h5>
+        <p>📍 Coimbatore</p>
         <p class="price">₹1000 / hour</p>
-        <a href="ground-details.html" class="view-details-btn">View Details</a>
+        <a href="ground-details.html?id=net-masters" class="view-details-btn">View Details</a>
       </div>
+    </div>
+
+    <div class="ground-card">
+      <img src="/Image/football turf.png" alt="Football Turf">
+      <div class="ground-card-body">
+        <span class="badge">Football</span>
+        <h5>Vizag Victory Turf</h5>
+        <p>📍 Visakhapatnam</p>
+        <p class="price">₹1400 / hour</p>
+        <a href="ground-details.html?id=victory-turf" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+
+    <div class="ground-card">
+      <img src="/Image/badminton.png" alt="Badminton Court">
+      <div class="ground-card-body">
+        <span class="badge">Badminton</span>
+        <h5>Trichy Smash Point</h5>
+        <p>📍 Trichy</p>
+        <p class="price">₹700 / hour</p>
+        <a href="ground-details.html?id=smash-point" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+
+    <div class="ground-card">
+      <img src="/Image/cricket.png" alt="Cricket Ground">
+      <div class="ground-card-body">
+        <span class="badge">Cricket</span>
+        <h5>Mysore Boundary Hitters</h5>
+        <p>📍 Mysore</p>
+        <p class="price">₹1900 / hour</p>
+        <a href="ground-details.html?id=boundary-hitters" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+
+    <div class="ground-card">
+      <img src="/Image/Basketball.png" alt="Basketball Court">
+      <div class="ground-card-body">
+        <span class="badge">Basketball</span>
+        <h5>Salem Urban Court</h5>
+        <p>📍 Salem</p>
+        <p class="price">₹1100 / hour</p>
+        <a href="ground-details.html?id=urban-court" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+
+    <div class="ground-card">
+      <img src="/Image/Tennis.png" alt="Tennis Court">
+      <div class="ground-card-body">
+        <span class="badge">Tennis</span>
+        <h5>Thiruvananthapuram Slam</h5>
+        <p>📍 Thiruvananthapuram</p>
+        <p class="price">₹1300 / hour</p>
+        <a href="ground-details.html?id=grand-slam" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+
+    <div class="ground-card">
+      <img src="/Image/turf.png" alt="Multi-Sport Turf">
+      <div class="ground-card-body">
+        <span class="badge">Multi-Sport</span>
+        <h5>Puducherry Dynamic Turf</h5>
+        <p>📍 Puducherry</p>
+        <p class="price">₹1700 / hour</p>
+        <a href="ground-details.html?id=dynamic-turf" class="view-details-btn">View Details</a>
+      </div>
+    </div>
+    <div id="noResults" class="no-results-container" style="display:none;">
+        <span class="no-results-icon">📍</span>
+        <h2 class="no-results-title">Coming Soon</h2>
+        <p class="no-results-text" style="color: #2a6b5f; font-size: 1.2rem; max-width: 600px; margin: 0 auto 30px; font-weight: 500;">We are currently perfecting our network across Tamil Nadu, Karnataka, Kerala, Andhra Pradesh, and Telangana to bring you the best sporting experience.</p>
+        <button class="btn btn-notify" onclick="showAvailableGrounds()">Notify Me in My City</button>
     </div>
   </div>
 </div>
@@ -121,36 +250,69 @@
             <a href="#">Instagram</a>
         </div>
     </div>
-    <p>© 2026 Sports Spots | Made by Helvsite</p>
+    <p>© 2026 Sportify Spots | Made by Helvsite</p>
 </footer>
 
 <script src="/js/supabase-config.js"></script>
 <script src="/js/auth-check.js"></script>
+<script src="/js/chatbot.js"></script>
 <script>
   (function(){
     var homeLink = document.getElementById('homeLink');
     if(homeLink) homeLink.href = (localStorage.getItem('loggedIn') === 'true') ? 'index.html' : 'index.html';
 
-    // Show profile link if logged in
-    var profileLink = document.getElementById('profileLink');
-    if(profileLink) profileLink.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'inline-block' : 'none';
+    // Mobile Menu Toggle
+    var mobileMenu = document.getElementById('mobile-menu');
+    var navMenu = document.getElementById('nav-menu');
+    if(mobileMenu && navMenu) {
+        mobileMenu.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
 
-    // Hide login button if logged in
-    var loginBtn = document.getElementById('loginBtn');
-    if(loginBtn) loginBtn.style.display = (localStorage.getItem('loggedIn') === 'true') ? 'none' : 'inline-block';
+    window.showToast = function(message) {
+      const container = document.getElementById('notification-container');
+      const toast = document.createElement('div');
+      toast.className = 'custom-toast';
+      toast.innerHTML = `
+          <span style="font-size: 1.5rem;">🔔</span>
+          <div style="font-weight: 700;">${message}</div>
+          <div class="toast-progress"></div>
+      `;
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+          toast.style.animation = 'fadeOut 0.5s forwards';
+          setTimeout(() => toast.remove(), 500);
+      }, 4000);
+    };
 
-    // Require login before viewing details / booking
+    // Replace default alerts with custom toast
+    window.showAvailableGrounds = function() {
+      showToast('Thank you! Sportify spots in your area are coming soon. Stay tuned!');
+      setTimeout(() => {
+          searchInput.value = '';
+          performSearch();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 1500);
+    };
+
+    // Replace login alert
     document.querySelectorAll('.view-details-btn').forEach(function(btn){
       btn.addEventListener('click', function(e){
         var href = btn.getAttribute('href') || 'ground-details.html';
         if (localStorage.getItem('loggedIn') !== 'true'){
           e.preventDefault();
-          localStorage.setItem('redirectAfterLogin', href);
-          window.location.href = 'login.html';
+          showToast('Please Login to view details');
+          setTimeout(() => {
+            localStorage.setItem('redirectAfterLogin', href);
+            window.location.href = 'login.html';
+          }, 1500);
         }
-        // otherwise allow navigation
       });
     });
+
     // Search functionality
     var searchInput = document.getElementById('groundSearch');
     var searchBtn = document.getElementById('searchBtn');
@@ -158,16 +320,23 @@
     function performSearch() {
       var filter = searchInput.value.toLowerCase();
       var cards = document.querySelectorAll('.ground-card');
+      var noResults = document.getElementById('noResults');
+      var found = false;
       
       cards.forEach(function(card) {
         var title = card.querySelector('h5').innerText.toLowerCase();
         var location = card.querySelector('p').innerText.toLowerCase();
         if (title.includes(filter) || location.includes(filter)) {
           card.style.display = "";
+          found = true;
         } else {
           card.style.display = "none";
         }
       });
+
+      if (noResults) {
+        noResults.style.display = found ? "none" : "block";
+      }
     }
 
     if(searchBtn) searchBtn.addEventListener('click', performSearch);

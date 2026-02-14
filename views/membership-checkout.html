@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Membership Checkout - Sports Spots</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membership Checkout | Sportify Spots</title>
+    <link rel="icon" type="image/png" href="/Image/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/index.css" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
+        body {
+            background: #F3EFE4;
+        }
         .checkout-container {
             max-width: 900px;
             margin: 40px auto;
@@ -13,6 +20,7 @@
         .checkout-header {
             text-align: center;
             margin-bottom: 40px;
+            color: #1f4f46;
         }
         .checkout-header h1 {
             font-size: 32px;
@@ -39,8 +47,8 @@
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 20px;
-            color: #333;
-            border-bottom: 2px solid #667eea;
+            color: #1f4f46;
+            border-bottom: 2px solid #1abc9c;
             padding-bottom: 10px;
         }
         .form-group {
@@ -63,8 +71,8 @@
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+            border-color: #1abc9c;
+            box-shadow: 0 0 5px rgba(26, 188, 156, 0.3);
         }
         .form-row {
             display: grid;
@@ -82,8 +90,8 @@
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 20px;
-            color: #333;
-            border-bottom: 2px solid #667eea;
+            color: #1f4f46;
+            border-bottom: 2px solid #1abc9c;
             padding-bottom: 10px;
         }
         .plan-details {
@@ -95,7 +103,7 @@
         .plan-name {
             font-size: 18px;
             font-weight: bold;
-            color: #667eea;
+            color: #1abc9c;
             margin-bottom: 5px;
         }
         .plan-duration {
@@ -106,13 +114,14 @@
         .plan-price {
             font-size: 24px;
             font-weight: bold;
-            color: #333;
+            color: #1f4f46;
         }
         .summary-item {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
             border-bottom: 1px solid #eee;
+            color: #333;
         }
         .summary-item:last-child {
             border-bottom: none;
@@ -121,18 +130,18 @@
             display: flex;
             justify-content: space-between;
             padding: 15px 0;
-            border-top: 2px solid #667eea;
+            border-top: 2px solid #1abc9c;
             margin-top: 15px;
             font-size: 18px;
             font-weight: bold;
-            color: #333;
+            color: #1f4f46;
         }
         .discount-label {
             color: #28a745;
         }
         .submit-btn {
             width: 100%;
-            background: #667eea;
+            background: #1abc9c;
             color: white;
             border: none;
             padding: 15px;
@@ -140,11 +149,12 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
             margin-top: 20px;
         }
         .submit-btn:hover {
-            background: #764ba2;
+            background: #16a085;
+            transform: scale(1.02);
         }
         .error-msg {
             color: #d32f2f;
@@ -167,14 +177,27 @@
 <body>
 
 <header>
-    <div class="logo">Sport Spot</div>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="grounds.html">Grounds</a>
-        <a href="membership.html">Membership</a>
+    <div class="logo-container">
+        <img src="/Image/logo.png" alt="Logo" class="logo-img">
+        <div class="btn-shine">Sportify Spots</div>
+    </div>
+    <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+    <nav id="nav-menu">
+        <a id="homeLink" href="index.html">Home</a>
+        <button class="button1" onclick="window.location.href='membership.html'">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24">
+        <path d="m18 0 8 12 10-8-4 20H4L0 4l10 8 8-12z"></path>
+    </svg>
+    Membership
+</button>
+        <a href="grounds.html">Grounds</a> 
         <a href="services.html">Service</a>
-        <a href="login.html" class="btn">Login</a>
-        <a href="signup.html" class="btn-outline">Sign Up</a>
+        <a id="profileLink" href="profile.html" class="profile-pill" style="display: none;">👤 Profile</a>
+         <button class="button" id="loginBtn" onclick="window.location.href='login.html'">Login</button>
     </nav>
 </header>
 
@@ -235,30 +258,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Payment Information -->
-            <div class="form-section" style="margin-top: 20px;">
-                <h2>Payment Method</h2>
-                <div class="form-group">
-                    <label for="cardName">Cardholder Name *</label>
-                    <input type="text" id="cardName" name="cardName" required>
-                </div>
-                <div class="form-group">
-                    <label for="cardNumber">Card Number *</label>
-                    <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
-                    <span class="error-msg" id="cardError"></span>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="expiry">Expiry Date *</label>
-                        <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cvv">CVV *</label>
-                        <input type="text" id="cvv" name="cvv" placeholder="123" required>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Right Side: Summary -->
@@ -273,9 +272,10 @@
                 </div>
 
                 <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                    <div style="color: #28a745; font-weight: bold; margin-bottom: 8px;">✓ 20% Discount on Bookings</div>
+                    <div id="bookingDiscountText" style="color: #28a745; font-weight: bold; margin-bottom: 8px;">✓ 20% Discount on Bookings</div>
+                    <div id="extraOfferText" style="color: #1f4f46; font-weight: bold; margin-bottom: 8px; display: none;">🔥 Special: ₹100 off on 1st booking</div>
                     <div style="color: #28a745; font-weight: bold; margin-bottom: 8px;">✓ Priority Booking Access</div>
-                    <div style="color: #28a745; font-weight: bold;">✓ Support Access</div>
+                    <div style="color: #28a745; font-weight: bold;">✓ VIP Support Access</div>
                 </div>
 
                 <div class="summary-item">
@@ -308,11 +308,54 @@
     </div>
 </div>
 
-<footer style="background: #333; color: white; text-align: center; padding: 20px; margin-top: 40px;">
-    <p>&copy; 2026 Sports Spots. All rights reserved.</p>
+<footer>
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Contact</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+        <div class="social-links">
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+    </div>
+    <p>© 2026 Sportify Spots | Made by Helvsite</p>
 </footer>
-
 <script>
+    (async function(){
+        // Mobile Menu Toggle
+        var mobileMenu = document.getElementById('mobile-menu');
+        var navMenu = document.getElementById('nav-menu');
+        if(mobileMenu && navMenu) {
+            mobileMenu.addEventListener('click', function() {
+                mobileMenu.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
+
+        // Check if already a member
+        const email = localStorage.getItem('userEmail');
+        if (email) {
+            try {
+                const response = await fetch('/api/membership/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await response.json();
+                if (data.success && data.isActiveMember) {
+                    showToast('You already have an active membership!', 'info');
+                    setTimeout(() => window.location.href = 'membership.html', 1500);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    })();
+
     // Get plan from URL
     function getPlanFromURL() {
         const params = new URLSearchParams(window.location.search);
@@ -324,14 +367,14 @@
         const plan = getPlanFromURL();
         const plans = {
             monthly: {
-                name: 'Monthly Plan',
+                name: 'PRO Plan',
                 duration: '1 Month of Access',
-                price: 10.00
+                price: 499.00
             },
-            yearly: {
-                name: 'Yearly Plan',
-                duration: '12 Months of Access',
-                price: 30.00
+            'pro-plus': {
+                name: 'PRO PLUS Plan',
+                duration: '1 Month of VIP Access',
+                price: 999.00
             }
         };
 
@@ -339,9 +382,21 @@
         
         document.getElementById('planNameDisplay').textContent = selectedPlan.name;
         document.getElementById('planDurationDisplay').textContent = selectedPlan.duration;
-        document.getElementById('planPriceDisplay').textContent = '$' + selectedPlan.price.toFixed(2);
-        document.getElementById('subtotal').textContent = '$' + selectedPlan.price.toFixed(2);
-        document.getElementById('total').textContent = '$' + selectedPlan.price.toFixed(2);
+        document.getElementById('planPriceDisplay').textContent = '₹' + selectedPlan.price.toFixed(2);
+        document.getElementById('subtotal').textContent = '₹' + selectedPlan.price.toFixed(2);
+        document.getElementById('total').textContent = '₹' + selectedPlan.price.toFixed(2);
+
+        // Update features display based on plan
+        const discountText = document.getElementById('bookingDiscountText');
+        const extraOffer = document.getElementById('extraOfferText');
+        
+        if (plan === 'pro-plus') {
+            discountText.textContent = '✓ 20% Discount on Bookings';
+            extraOffer.style.display = 'block';
+        } else {
+            discountText.textContent = '✓ 10% Discount on Bookings';
+            extraOffer.style.display = 'none';
+        }
     }
 
     // Form validation
@@ -354,16 +409,11 @@
         const state = document.getElementById('state').value.trim();
         const zipcode = document.getElementById('zipcode').value.trim();
         const country = document.getElementById('country').value.trim();
-        const cardName = document.getElementById('cardName').value.trim();
-        const cardNumber = document.getElementById('cardNumber').value.trim();
-        const expiry = document.getElementById('expiry').value.trim();
-        const cvv = document.getElementById('cvv').value.trim();
 
         // Clear all error messages
         document.getElementById('nameError').textContent = '';
         document.getElementById('emailError').textContent = '';
         document.getElementById('phoneError').textContent = '';
-        document.getElementById('cardError').textContent = '';
 
         let isValid = true;
 
@@ -383,86 +433,129 @@
         }
 
         if (!address || !city || !state || !zipcode || !country) {
-            alert('Please fill all billing address fields');
-            isValid = false;
-        }
-
-        if (!cardName || !cardNumber || !expiry || !cvv) {
-            document.getElementById('cardError').textContent = 'Please fill all payment details';
-            isValid = false;
-        }
-
-        // Basic card number validation (not real validation)
-        if (cardNumber && cardNumber.replace(/\s/g, '').length !== 16) {
-            document.getElementById('cardError').textContent = 'Card number must be 16 digits';
+            showToast('Please fill all billing address fields', 'warning');
             isValid = false;
         }
 
         return isValid;
     }
 
-    // Submit checkout
+    // Submit checkout with Razorpay
     function submitCheckout() {
         if (!validateForm()) {
             return;
         }
 
         const plan = getPlanFromURL();
-        const formData = {
-            plan: plan,
-            fullName: document.getElementById('fullName').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            address: document.getElementById('address').value,
-            city: document.getElementById('city').value,
-            state: document.getElementById('state').value,
-            zipcode: document.getElementById('zipcode').value,
-            country: document.getElementById('country').value,
-            cardName: document.getElementById('cardName').value
-        };
+        const fullName = document.getElementById('fullName').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
 
-        // Send to backend
+        // 1. Create order on server
+        fetch('/api/membership/create-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ plan, email })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                throw new Error(data.message || 'Failed to create order');
+            }
+
+            // 2. Open Razorpay Checkout
+            const options = {
+                "key": data.key_id,
+                "amount": data.amount,
+                "currency": "INR",
+                "name": "Sportify Spots",
+                "description": `Membership: ${plan.toUpperCase()}`,
+                "image": "/Image/logo.png",
+                "order_id": data.order_id,
+                "handler": function (response) {
+                    // 3. Verify payment on server
+                    verifyPayment(response, {
+                        plan, fullName, email, phone,
+                        address: document.getElementById('address').value,
+                        city: document.getElementById('city').value,
+                        state: document.getElementById('state').value,
+                        zipcode: document.getElementById('zipcode').value,
+                        country: document.getElementById('country').value
+                    });
+                },
+                "prefill": {
+                    "name": fullName,
+                    "email": email,
+                    "contact": phone
+                },
+                "config": {
+                    "display": {
+                        "blocks": {
+                            "banks": { "name": "Most Used Banks", "instruments": [{ "method": "nb" }] }
+                        },
+                        "sequence": ["block.banks"],
+                        "preferences": { "show_default_blocks": true }
+                    }
+                },
+                "theme": { "color": "#1abc9c" }
+            };
+
+            const rzp1 = new Razorpay(options);
+            rzp1.open();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Error: ' + error.message, 'error');
+        });
+    }
+
+    function verifyPayment(rzpResponse, formData) {
+        fetch('/api/membership/verify-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                razorpay_order_id: rzpResponse.razorpay_order_id,
+                razorpay_payment_id: rzpResponse.razorpay_payment_id,
+                razorpay_signature: rzpResponse.razorpay_signature
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // 4. Activate membership
+                activateMembership(formData);
+            } else {
+                showToast('Payment verification failed. Please contact support.', 'error');
+            }
+        })
+        .catch(err => {
+            console.error('Verification error:', err);
+            showToast('Error verifying payment.', 'error');
+        });
+    }
+
+    function activateMembership(formData) {
         fetch('/api/membership/checkout', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Membership activated successfully!');
-                // Store membership info
+                showToast('Membership activated successfully!', 'success');
                 localStorage.setItem('membershipActive', 'true');
-                localStorage.setItem('membershipPlan', plan);
-                localStorage.setItem('membershipEmail', formData.email);
-                window.location.href = 'membership-dashboard.html';
+                localStorage.setItem('membershipPlan', formData.plan);
+                setTimeout(() => window.location.href = 'profile.html', 2000);
             } else {
-                alert('Error: ' + (data.message || 'Checkout failed'));
+                showToast('Error activating membership: ' + data.message, 'error');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert('Connection error. Please try again.');
+            console.error('Activation error:', error);
+            showToast('Payment was successful but activation failed. Please contact support.', 'error');
         });
     }
-
-    // Format card number input
-    document.getElementById('cardNumber')?.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\s/g, '');
-        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-        e.target.value = formattedValue;
-    });
-
-    // Format expiry input
-    document.getElementById('expiry')?.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length >= 2) {
-            value = value.substring(0, 2) + '/' + value.substring(2, 4);
-        }
-        e.target.value = value;
-    });
 
     // Initialize on page load
     window.addEventListener('load', initializePlan);

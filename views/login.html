@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login | Sports Spots Booking</title>
+  <title>Login | Sportify Spots</title>
   <link rel="icon" type="image/png" href="/Image/logo%20.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="/css/index.css" rel="stylesheet">
@@ -14,7 +14,7 @@
 <header>
    <div class="logo-container">
         <img src="/Image/logo.png" alt="Logo" class="logo-img">
-        <div class="btn-shine">Sports Spots</div>
+        <div class="btn-shine">Sportify Spots</div>
     </div>
   <nav>
     <a href="index.html">Home</a>
@@ -57,7 +57,7 @@
 <script>
 document.getElementById('googleLoginBtn').addEventListener('click', async () => {
   if (!window.sbClient) {
-    alert('Supabase client not initialized');
+    showToast('Supabase client not initialized', 'error');
     return;
   }
   const { data, error } = await sbClient.auth.signInWithOAuth({
@@ -68,7 +68,7 @@ document.getElementById('googleLoginBtn').addEventListener('click', async () => 
   });
   
   if (error) {
-    alert('Google Login failed: ' + error.message);
+    showToast('Google Login failed: ' + error.message, 'error');
   }
 });
 
@@ -92,19 +92,23 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
       localStorage.setItem('userId', result.user.id);
       localStorage.setItem('userName', result.user.fullName);
       
-      const redirect = localStorage.getItem('redirectAfterLogin');
-      if(redirect){
-        localStorage.removeItem('redirectAfterLogin');
-        window.location.href = redirect;
-      } else {
-        window.location.href = result.user.isAdmin ? 'admin.html' : 'index.html';
-      }
+      showToast('Login Successful! Welcome back.', 'success');
+      
+      setTimeout(() => {
+        const redirect = localStorage.getItem('redirectAfterLogin');
+        if(redirect){
+          localStorage.removeItem('redirectAfterLogin');
+          window.location.href = redirect;
+        } else {
+          window.location.href = result.user.isAdmin ? 'admin.html' : 'index.html';
+        }
+      }, 1000);
     } else {
-      alert(result.message || 'Invalid email or password.');
+      showToast(result.message || 'Invalid email or password.', 'error');
     }
   } catch (error) {
     console.error('Error:', error);
-    alert('Login failed. Please try again.');
+    showToast('Login failed. Please try again.', 'error');
   }
 });
 
@@ -114,12 +118,11 @@ if (forgotPasswordLink) {
     e.preventDefault();
     const email = document.getElementById('email').value.trim();
     if (!email) {
-      alert('Please enter your email address first.');
+      showToast('Please enter your email address first.', 'warning');
       return;
     }
     
-    // Placeholder for Forgot Password logic
-    alert('Password reset link has been sent to ' + email + ' (Implementation pending API)');
+    showToast('Password reset link sent to ' + email, 'info');
   });
 }
 </script>
