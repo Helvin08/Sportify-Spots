@@ -1334,7 +1334,7 @@ wheels = [
 ]
 
 [[package]]
-name = "sports-spots-backend"
+name = "sportify-spots-backend"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

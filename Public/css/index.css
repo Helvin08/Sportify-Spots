@@ -154,10 +154,9 @@ header {
   -webkit-text-size-adjust: none;
   font-weight: 600;
   font-size: 30px;
-  font-style: italic;
   text-decoration: none;
   white-space: nowrap;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 @-moz-keyframes shine {
   0% {
