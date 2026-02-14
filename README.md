@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-# Sportify Spots 🏟️
-=======
+
 # Sportify Spots
->>>>>>> 12971506ebc4d66e4d3a7def23cf92a4ea83e844
 
 Sportify Spots is a modern and user-friendly sports ground booking website that helps players easily find and book sports facilities such as cricket grounds, football turfs, and badminton courts.
 
@@ -38,6 +35,6 @@ This project is ideal for:
 Frontend development completed  
 Backend integration can be added (API, database, payments)
 
----
+
 
 ⭐ If you like this project, feel free to star the repository!
