@@ -18,7 +18,7 @@
         <div class="btn-shine">Sportify Spots</div>
     </div>
   <nav>
-    <a href="index.html">Home</a>
+    <a href="../index.html">Home</a>
     <a href="grounds.html">Grounds</a>
     <a href="services.html">Service</a>
   </nav>
@@ -101,7 +101,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
           localStorage.removeItem('redirectAfterLogin');
           window.location.href = redirect;
         } else {
-          window.location.href = result.user.isAdmin ? 'admin.html' : 'index.html';
+          window.location.href = result.user.isAdmin ? 'admin.html' : '../index.html';
         }
       }, 1000);
     } else {

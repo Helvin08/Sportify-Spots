@@ -75,7 +75,7 @@
         <span class="bar"></span>
     </div>
     <nav id="nav-menu">
-        <a id="homeLink" href="index.html">Home</a>
+        <a id="homeLink" href="../index.html">Home</a>
         <button class="button1" onclick="window.location.href='membership.html'">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24">
         <path d="m18 0 8 12 10-8-4 20H4L0 4l10 8 8-12z"></path>
@@ -260,7 +260,7 @@
 <script>
   (function(){
     var homeLink = document.getElementById('homeLink');
-    if(homeLink) homeLink.href = (localStorage.getItem('loggedIn') === 'true') ? 'index.html' : 'index.html';
+    if(homeLink) homeLink.href = (localStorage.getItem('loggedIn') === 'true') ? '../index.html' : '../index.html';
 
     // Mobile Menu Toggle
     var mobileMenu = document.getElementById('mobile-menu');
